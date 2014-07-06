@@ -30,6 +30,9 @@ SuperBounceGame/Assets/Plugins/NobleInterface.cs
 SuperBounceGame/Assets/Plugins/NobleLogger.cs
 SuperBounceGame/Assets/Plugins/GUI Elements/
 SuperBounceGame/Assets/Editor/NobleConsoleWindow.cs
+# Ignore the json library that we use in the logger
+SuperBounceGame/Assets/Plugins/Newtonsoft.Json.dll
+SuperBounceGame/Assets/Plugins/Newtonsoft.Json.dll.meta
 
 # Ignore the image effects package
 SuperBounceGame/Assets/Standard Assets/Image Effects (Pro Only)/
