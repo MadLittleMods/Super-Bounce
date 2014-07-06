@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -118,7 +120,7 @@ public class KinematicRigidbodyCharacterController : MonoBehaviour
 		Gizmos.DrawLine(transform.position, transform.position + this.debugLastMoveDeltaMovement*10f);
 		/* */
 
-		/* */
+		/* * /
 		// Draw sweep cubes
 		Gizmos.color = new Color(1f, 0f, 1f);
 		Gizmos.DrawWireCube(this.debugSweepTestFromPosition, 1.001f * Vector3.one);
@@ -149,9 +151,10 @@ public class KinematicRigidbodyCharacterController : MonoBehaviour
 		Vector3 deltaMovement = currentState.position - transform.position;
 
 
+		#if UNITY_EDITOR
 		if(EditorApplication.isPlaying)
 			this.debugLastMoveDeltaMovement = deltaMovement;
-		
+		#endif
 		
 		Vector3 beforeTestPosition = transform.position;
 		// Move the rigidbody away from the way we are traveling so we make sure we go through the normals of the collider
@@ -163,27 +166,33 @@ public class KinematicRigidbodyCharacterController : MonoBehaviour
 		
 		// Move the rigidbody away from the way we are traveling so we make sure we go through the normals of the collider
 		transform.position += skinOffset;
-		
+
+		#if UNITY_EDITOR
 		if(EditorApplication.isPlaying)
 			this.debugSweepTestFromPosition = transform.position;
-		
+		#endif
+
 		Vector3 sweepTargetOffset = (deltaMovement + (-1f * 2f * skinOffset));
 		Vector3 sweepDirection = sweepTargetOffset.normalized;
 		float sweepDistance = sweepTargetOffset.magnitude;
+		#if UNITY_EDITOR
 		if(EditorApplication.isPlaying)
 			this.debugSweepTestOffsetDestination = sweepDirection * sweepDistance;
+		#endif
 		
 		RaycastHit[] hits = rigidbody.SweepTestAll(sweepDirection, sweepDistance);
 		
 		// Set back the position so no on will know :P
 		transform.position = beforeTestPosition;
-		
+
+		#if UNITY_EDITOR
 		if(EditorApplication.isPlaying)
 		{
 			//Debug.Log("isPlaying: " + Time.time);
 			this.debugPointOnBounds = new List<Vector3>();
 			this.debugCollisionPoint = new List<Vector3>();
 		}
+		#endif
 		
 		
 		//Debug.Log("pos: " + transform.position.ToString("f3") + " deltaMovement: " + deltaMovement.magnitude.ToString("f3") + ":" + deltaMovement.ToString("f4") + " sweepTestFrom: " + this.debugSweepTestFromPosition.ToString("f3") + " sweepTestTo: " + (this.debugSweepTestFromPosition + this.debugSweepTestOffsetDestination).ToString("f3") + " : " + this.debugSweepTestOffsetDestination.magnitude.ToString("f3"));
@@ -238,9 +247,10 @@ public class KinematicRigidbodyCharacterController : MonoBehaviour
 
 
 
-
+				#if UNITY_EDITOR
 				if(EditorApplication.isPlaying)
 					this.debugCollisionPoint.Add(hit.point);
+				#endif
 			}
 			
 			// Move ourselves to the plane we hit

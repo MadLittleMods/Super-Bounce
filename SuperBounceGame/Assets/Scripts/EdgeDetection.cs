@@ -36,7 +36,7 @@ public class EdgeDetection : MonoBehaviour {
 	/// <param name="go">The gameobject with a MeshFilter with Mesh</param>
 	/// <param name="point">The point to find nearet to</param>
 	/// <returns>Array of <see cref="IndexPointPair" /> closest to the point</returns>
-	public static Dictionary<MeshFilter, List<IndexPointPair>> NearestVerticesTo(GameObject go, Vector3 point)
+	public static Dictionary<MeshFilter, List<IndexPointPair>> NearestVerticesTo(GameObject go, Vector3 point, float yRange = float.MaxValue)
 	{
 		//Debug.Log(point);
 
@@ -71,28 +71,32 @@ public class EdgeDetection : MonoBehaviour {
 					//if(pointPair.index == 5)
 					//	Debug.Log(pointPair.point);
 
-					Vector3 diff = point-pointPair.point;
-					float distSqr = diff.sqrMagnitude;
-					
-					if (distSqr < minDistanceSqr)
+					// If the point is on about the same y level
+					if(Mathf.Abs(point.y-pointPair.point.y) < yRange)
 					{
-						//Debug.Log("clearing nearest: " + pointPair.index + ": " + pointPair.point);
-						nearestVertexDictionary.Clear();
+						Vector3 diff = point-pointPair.point;
+						float distSqr = diff.sqrMagnitude;
+						
+						if (distSqr < minDistanceSqr)
+						{
+							//Debug.Log("clearing nearest: " + pointPair.index + ": " + pointPair.point);
+							nearestVertexDictionary.Clear();
 
-						minDistanceSqr = distSqr;
+							minDistanceSqr = distSqr;
 
-						//Debug.Log(nearestVertex + " " + distSqr);
-					}
+							//Debug.Log(nearestVertex + " " + distSqr);
+						}
 
-					if(Mathf.Approximately(distSqr, minDistanceSqr))
-					{
-						if(!nearestVertexDictionary.ContainsKey(meshFilter))
-							nearestVertexDictionary[meshFilter] = new List<IndexPointPair>();
+						if(Mathf.Approximately(distSqr, minDistanceSqr))
+						{
+							if(!nearestVertexDictionary.ContainsKey(meshFilter))
+								nearestVertexDictionary[meshFilter] = new List<IndexPointPair>();
 
-						//Debug.Log("adding nearest: " + pointPair.index + ": " + pointPair.point);
-						// convert nearest vertex back to world space and add it to the list
-						nearestVertexDictionary[meshFilter].Add(new IndexPointPair(pointPair));
+							//Debug.Log("adding nearest: " + pointPair.index + ": " + pointPair.point);
+							// convert nearest vertex back to world space and add it to the list
+							nearestVertexDictionary[meshFilter].Add(new IndexPointPair(pointPair));
 
+						}
 					}
 				}
 				//Debug.Log("near: " + nearestVertex);
@@ -225,7 +229,7 @@ public class EdgeDetection : MonoBehaviour {
 			if(this.point != null && this.meshGameObject != null)
 			{
 				Gizmos.color = new Color(1f, .2f, .2f, 1f);
-				Dictionary<MeshFilter, List<IndexPointPair>> verticeDictionary = this.NearestVerticesTo(this.meshGameObject, this.point.transform.position);
+				Dictionary<MeshFilter, List<IndexPointPair>> verticeDictionary = this.NearestVerticesTo(this.meshGameObject, this.point.transform.position, 1f);
 
 				foreach(KeyValuePair<MeshFilter, List<IndexPointPair>> meshPointsPair in verticeDictionary)
 				{

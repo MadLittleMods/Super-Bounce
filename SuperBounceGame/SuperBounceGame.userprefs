@@ -1,13 +1,15 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Player.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\KinematicRigidbodyCharacterController.cs">
     <Files>
-      <File FileName="Assets\Scripts\HeadMove.cs" Line="95" Column="5" />
-      <File FileName="Assets\Scripts\UI\GeneralUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Managers\GameManager.cs" Line="258" Column="30" />
-      <File FileName="Assets\Scripts\Player.cs" Line="215" Column="5" />
-      <File FileName="Assets\Scripts\MimicChildOf.cs" Line="31" Column="8" />
-      <File FileName="Assets\Scripts\Managers\TestingManager.cs" Line="4" Column="93" />
+      <File FileName="Assets\Scripts\KinematicRigidbodyCharacterDriver.cs" Line="51" Column="20" />
+      <File FileName="Assets\Scripts\Player.cs" Line="105" Column="44" />
+      <File FileName="Assets\Scripts\HeadMove.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\KinematicRigidbodyCharacterController.cs" Line="32" Column="64" />
+      <File FileName="Assets\Scripts\EdgeDetection.cs" Line="232" Column="146" />
+      <File FileName="Assets\Scripts\SuperBounceController.cs" Line="106" Column="130" />
+      <File FileName="Assets\Scripts\Managers\PlayerManager.cs" Line="183" Column="4" />
+      <File FileName="Assets\Scripts\Managers\GameManager.cs" Line="243" Column="22" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

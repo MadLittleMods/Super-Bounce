@@ -103,7 +103,7 @@ public class SuperBounceController : MonoBehaviour {
 		
 		// Find the nearest vertices
 		// Even this might contain multiple points, they are all in the same position
-		Dictionary<MeshFilter, List<IndexPointPair>> verticeDictionary = EdgeDetection.NearestVerticesTo(go, currentState.position);
+		Dictionary<MeshFilter, List<IndexPointPair>> verticeDictionary = EdgeDetection.NearestVerticesTo(go, currentState.position, .5f);
 		// Loop through all the nearest vertices
 		foreach(KeyValuePair<MeshFilter, List<IndexPointPair>> meshPointPair in verticeDictionary)
 		{

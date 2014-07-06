@@ -58,7 +58,7 @@ public class HeadMove : MonoBehaviour {
 	// Has to be LateUpdate because of Mecanim
 	void LateUpdate () 
 	{
-		if(this.hasInitialized)
+		if(this.hasInitialized && this.headTransform != null && this.bodyTransform != null)
 		{
 
 

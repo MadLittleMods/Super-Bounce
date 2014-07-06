@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using System.Collections;
 
 [RequireComponent (typeof(KinematicRigidbodyCharacterController))]
@@ -38,8 +40,12 @@ public class KinematicRigidbodyCharacterDriver : MonoBehaviour
 		}
 	}
 	
+	public bool forceNetworkViewToBeMine = true;
+	public bool forceGameManagerStatus = true;
+
+
 	// For animation
-	public Animator animator;
+	public NetworkedAnimator networkedAnimator;
 	public PlayerAnimatorEventCatcher playerAnimatorEventCatcher;
 	
 	// So we can change the height of collider when we crouch
@@ -78,6 +84,10 @@ public class KinematicRigidbodyCharacterDriver : MonoBehaviour
 	}
 
 
+	NetworkView netView;
+	GameManager gameManager;
+
+
 
 	private Vector3 initPlayerBoxColliderSize;
 	private Vector3 initPlayerBoxColliderCenter;
@@ -90,6 +100,14 @@ public class KinematicRigidbodyCharacterDriver : MonoBehaviour
 		// Attach the event
 		if(this.playerAnimatorEventCatcher != null)
 			this.playerAnimatorEventCatcher.OnPlayFootStepSound += this.PlayFootStepSound;
+
+
+		this.netView = GetComponent<NetworkView>();
+		
+		// Grab the Player Manager
+		GameObject[] managers = GameObject.FindGameObjectsWithTag("Manager");
+		if(managers.Length > 0)
+			this.gameManager = managers[0].GetComponent<GameManager>();
 
 		this.ResetCharacterDriver();
 	}
@@ -117,81 +135,103 @@ public class KinematicRigidbodyCharacterDriver : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		// Crouching
-		this.IsCrouching = Input.GetAxis("Crouch") > .7f;
-		if(this.animator)
+		// Only control the player if the networkView belongs to you
+		if(!this.forceNetworkViewToBeMine || (this.netView && this.netView.isMine))
 		{
-			this.animator.SetBool("IsCrouching", this.IsCrouching);
-		}
-		
-		if(this.IsCrouching)
-		{
-			// Change to crouching height bounds
-			Vector3 size = this.playerBoxCollider.size;
-			this.playerBoxCollider.size = new Vector3(size.x, Mathf.Clamp(size.y - (3f*Time.deltaTime), this.crouchHeight, this.initPlayerBoxColliderSize.y), size.z); //Mathf.Lerp(bounds.y, this.crouchHeight, 5f*Time.deltaTime)
-			
-			// Center is halfway up the collider
-			this.playerBoxCollider.center = new Vector3(this.initPlayerBoxColliderCenter.x, this.playerBoxCollider.size.y/2f, this.initPlayerBoxColliderCenter.z);
-		}
-		else
-		{
-			Vector3 size = this.playerBoxCollider.size;
-			this.playerBoxCollider.size = new Vector3(size.x, Mathf.Clamp(size.y + (3f*Time.deltaTime), this.crouchHeight, this.initPlayerBoxColliderSize.y), size.z);
-			//this.playerBoxCollider.size = this.initPlayerBoxColliderSize;
-			this.playerBoxCollider.center = new Vector3(this.initPlayerBoxColliderCenter.x, this.playerBoxCollider.size.y/2f, this.initPlayerBoxColliderCenter.z);
-		}
+			// If the game has started
+			if(!this.forceGameManagerStatus || (this.gameManager && this.gameManager.GameStatus == GameManager.GameState.started))
+			{
+				// Crouching
+				this.IsCrouching = Input.GetAxis("Crouch") > .7f;
+				if(this.networkedAnimator)
+				{
+					this.networkedAnimator.SetBool("IsCrouching", this.IsCrouching);
+				}
+				
+				if(this.IsCrouching)
+				{
+					// Change to crouching height bounds
+					Vector3 size = this.playerBoxCollider.size;
+					this.playerBoxCollider.size = new Vector3(size.x, Mathf.Clamp(size.y - (3f*Time.deltaTime), this.crouchHeight, this.initPlayerBoxColliderSize.y), size.z); //Mathf.Lerp(bounds.y, this.crouchHeight, 5f*Time.deltaTime)
+					
+					// Center is halfway up the collider
+					this.playerBoxCollider.center = new Vector3(this.initPlayerBoxColliderCenter.x, this.playerBoxCollider.size.y/2f, this.initPlayerBoxColliderCenter.z);
+				}
+				else
+				{
+					Vector3 size = this.playerBoxCollider.size;
+					this.playerBoxCollider.size = new Vector3(size.x, Mathf.Clamp(size.y + (3f*Time.deltaTime), this.crouchHeight, this.initPlayerBoxColliderSize.y), size.z);
+					//this.playerBoxCollider.size = this.initPlayerBoxColliderSize;
+					this.playerBoxCollider.center = new Vector3(this.initPlayerBoxColliderCenter.x, this.playerBoxCollider.size.y/2f, this.initPlayerBoxColliderCenter.z);
+				}
 
 
 
 
-		/* * /
-		// Fixed deltaTime rendering at any speed with smoothing
-		// Technique: http://gafferongames.com/game-physics/fix-your-timestep/
-		float frameTime = Time.time - currentTime;
-		this.currentTime = Time.time;
-		
-		this.accumulator += frameTime;
-		
-		while (this.accumulator >= this.dt)
-		{
-			this.previousState = this.currentState;
-			this.currentState = this.MoveUpdate(this.currentState, this.dt);
-			
-			//integrate(state, this.t, this.dt);
-			Vector3 movementDelta = currentState.position - transform.position;
-			this.characterController.Move(movementDelta);
-			this.currentState = new CharacterState(transform.position, this.currentState.velocity);
-			
-			accumulator -= this.dt;
-			this.t += this.dt;
+				/* * /
+				// Fixed deltaTime rendering at any speed with smoothing
+				// Technique: http://gafferongames.com/game-physics/fix-your-timestep/
+				float frameTime = Time.time - currentTime;
+				this.currentTime = Time.time;
+				
+				this.accumulator += frameTime;
+				
+				while (this.accumulator >= this.dt)
+				{
+					this.previousState = this.currentState;
+					this.currentState = this.MoveUpdate(this.currentState, this.dt);
+					
+					//integrate(state, this.t, this.dt);
+					Vector3 movementDelta = currentState.position - transform.position;
+					this.characterController.Move(movementDelta);
+					this.currentState = new CharacterState(transform.position, this.currentState.velocity);
+					
+					accumulator -= this.dt;
+					this.t += this.dt;
+				}
+					
+				
+				// Reset it
+				this.isFirstPhysicsFrame = true;
+				/* */
+
+			}
+
 		}
-			
-		
-		// Reset it
-		this.isFirstPhysicsFrame = true;
-		/* */
 	}
 
 	void FixedUpdate()
 	{
-		/* * /
-		this.currentState = this.MoveUpdate(this.currentState, Time.fixedDeltaTime);
-		Vector3 movementDelta = currentState.position - transform.position;
-		this.characterController.Move(movementDelta);
-		this.currentState = new CharacterState(transform.position, this.currentState.velocity);
-		/* */
+		// Only control the player if the networkView belongs to you
+		if(!this.forceNetworkViewToBeMine || (this.netView && this.netView.isMine))
+		{
+			// If the game has started
+			if(!this.forceGameManagerStatus || (this.gameManager && this.gameManager.GameStatus == GameManager.GameState.started))
+			{
 
-		/* */
-		this.currentState = this.MoveUpdate(this.currentState, Time.fixedDeltaTime);
-		Noble.Log("Driver before CalculateMove: " + this.currentState);
-		this.currentState = this.characterController.CalculateMove(this.currentState, this.superBounceController.HandleSuperBounce);
-		Noble.Log("Driver after CalculateMove: " + this.currentState);
-		transform.position = this.currentState.position;
-		/* */
+				/* * /
+				this.currentState = this.MoveUpdate(this.currentState, Time.fixedDeltaTime);
+				Vector3 movementDelta = currentState.position - transform.position;
+				this.characterController.Move(movementDelta);
+				this.currentState = new CharacterState(transform.position, this.currentState.velocity);
+				/* */
 
-		//Debug.Log(this.currentState);
+				/* */
+				this.currentState = this.MoveUpdate(this.currentState, Time.fixedDeltaTime);
+				Noble.Log("Driver before CalculateMove: " + this.currentState);
+				this.currentState = this.characterController.CalculateMove(this.currentState, this.superBounceController.HandleSuperBounce);
+				Noble.Log("Driver after CalculateMove: " + this.currentState);
+				transform.position = this.currentState.position;
+				/* */
 
-		this.isFirstPhysicsFrame = true;
+				//Debug.Log(this.currentState);
+
+				this.isFirstPhysicsFrame = true;
+
+
+			}
+		}
+
 	}
 
 	float snapshotInputVertical = 0f;
@@ -201,6 +241,7 @@ public class KinematicRigidbodyCharacterDriver : MonoBehaviour
 	{
 		CharacterState currentState = new CharacterState(state);
 
+		#if UNITY_EDITOR
 		// Save these so when we pause to debug
 		// We can continue with those inputs
 		if(EditorApplication.isPlaying)
@@ -212,16 +253,21 @@ public class KinematicRigidbodyCharacterDriver : MonoBehaviour
 
 		float inputVertical = EditorApplication.isPaused && this.useSnapshotInputWhenPaused ? this.snapshotInputVertical : Input.GetAxis("Vertical");
 		float inputHorizontal = EditorApplication.isPaused && this.useSnapshotInputWhenPaused ? this.snapshotInputHorizontal :  Input.GetAxis("Horizontal");
+		#else
+		float inputVertical = Input.GetAxis("Vertical");
+		float inputHorizontal = Input.GetAxis("Horizontal");
+
+		#endif
 
 		// Save this as we can save 1 calculation when we add the gravity
 		bool isGrounded = this.characterController.isGroundedSmart(currentState.velocity);
 
 		// Adjust mecanim parameters
-		if(this.animator)
+		if(this.networkedAnimator)
 		{
-			this.animator.SetFloat("SurgeSpeed", Input.GetAxis("Vertical"));
-			this.animator.SetFloat("SwaySpeed", Input.GetAxis("Horizontal"));
-			this.animator.SetBool("IsGrounded", isGrounded);
+			this.networkedAnimator.SetFloat("SurgeSpeed", Input.GetAxis("Vertical"));
+			this.networkedAnimator.SetFloat("SwaySpeed", Input.GetAxis("Horizontal"));
+			this.networkedAnimator.SetBool("IsGrounded", isGrounded);
 		}
 
 

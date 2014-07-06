@@ -178,8 +178,12 @@ public class PlayerManager : MonoBehaviour {
 	{
 		Debug.Log("Spawning Player: " + position);
 
-		this.GetPlayer(guid).transform.position = position;
-		this.GetPlayer(guid).transform.rotation = rotation;
+		var player = this.GetPlayer(guid);
+		if(player != null)
+		{
+			player.transform.position = position;
+			player.transform.rotation = rotation;
+		}
 	}
 
 	public void SpawnPlayer(string guid, Transform spawnTransform)
@@ -192,7 +196,7 @@ public class PlayerManager : MonoBehaviour {
 		if(this.spawnPointList.Count > 0)
 			this.SpawnPlayer(guid, this.spawnPointList[UnityEngine.Random.Range(0, this.spawnPointList.Count)]);
 		else
-			this.SpawnPlayer(guid, new Vector3(), new Quaternion());
+			this.SpawnPlayer(guid, Vector3.zero + new Vector3(0f, 1f, 0f), new Quaternion());
 	}
 
 

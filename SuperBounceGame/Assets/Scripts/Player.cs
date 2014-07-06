@@ -102,7 +102,7 @@ public class Player : MonoBehaviour {
 	
 	public PlayerModelExposer modelPlayerModelExposer;
 	public KinematicRigidbodyCharacterDriver characterDriver;
-	public Animator animator;
+	public NetworkedAnimator networkedAnimator;
 
 
 	PlayerManager playerManager;
@@ -220,9 +220,9 @@ public class Player : MonoBehaviour {
 			Debug.LogWarning("Missing `HeadMove` script on camera for bounce player");
 		
 		
-		if(this.animator != null)
+		if(this.networkedAnimator != null)
 		{
-			this.animator.SetBool("IsInit", true);
+			this.networkedAnimator.SetBool("IsInit", true);
 		}
 
 

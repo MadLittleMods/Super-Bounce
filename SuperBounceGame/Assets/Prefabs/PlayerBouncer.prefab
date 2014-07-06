@@ -4580,6 +4580,7 @@ GameObject:
   - 114: {fileID: 11400026}
   - 114: {fileID: 11400028}
   - 148: {fileID: 14800000}
+  - 114: {fileID: 11400010}
   m_Layer: 0
   m_Name: PlayerBouncer
   m_TagString: Player
@@ -14163,6 +14164,18 @@ MonoBehaviour:
   CameraSpawn: {fileID: 400414}
   modelPlayerModelExposer: {fileID: 11400006}
   characterDriver: {fileID: 11400018}
+  networkedAnimator: {fileID: 11400010}
+--- !u!114 &11400010
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 566a0ee2abb2b564fb7cd4c8ebb11dea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   animator: {fileID: 9500000}
 --- !u!114 &11400018
 MonoBehaviour:
@@ -14182,7 +14195,9 @@ MonoBehaviour:
   crouchMaxSwaySpeed: 3
   crouchJumpHeight: 4
   crouchHeight: 1.5
-  animator: {fileID: 9500000}
+  forceNetworkViewToBeMine: 1
+  forceGameManagerStatus: 1
+  networkedAnimator: {fileID: 11400010}
   playerAnimatorEventCatcher: {fileID: 11400000}
   playerBoxCollider: {fileID: 6500000}
   jumpSoundEffect: {fileID: 11400002}
