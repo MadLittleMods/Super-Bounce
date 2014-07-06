@@ -1,0 +1,89 @@
+# Ignore unneeded Unity files
+# --------------------------------------------------
+SuperBounceGame/Temp/
+SuperBounceGame/obj/
+SuperBounceGame/Library/
+
+SuperBounceGame/*.csproj
+SuperBounceGame/*.unityproj
+SuperBounceGame/*.sln
+
+# Ignore Custom Builds
+# --------------------------------------------------
+SuperBounceGame/[Bb]uilds/
+
+
+
+# Ignore some Assets
+# --------------------------------------------------
+
+# Ignore fonts that we can't include because of their EULA
+SuperBounceGame/UIResources/fonts/mission_gothic/
+
+# Ignore some of the non-code assets
+SuperBounceGame/Assets/Models/
+SuperBounceGame/Assets/Sounds/
+
+# Ignore the Noble Logger
+SuperBounceGame/Assets/Plugins/Noble.cs
+SuperBounceGame/Assets/Plugins/NobleInterface.cs
+SuperBounceGame/Assets/Plugins/NobleLogger.cs
+SuperBounceGame/Assets/Plugins/GUI Elements/
+SuperBounceGame/Assets/Editor/NobleConsoleWindow.cs
+
+# Ignore the image effects package
+SuperBounceGame/Assets/Standard Assets/Image Effects (Pro Only)/
+SuperBounceGame/Assets/Editor/Image Effects
+
+# Ignore the matcap package
+SuperBounceGame/Assets/JMO Assets/
+
+
+
+
+# Ignore Coherent UI (against licensing): Go get a free evalutation version: http://coherent-labs.com/
+# --------------------------------------------------
+SuperBounceGame/Assets/CoherentUI
+SuperBounceGame/Assets/CoherentUI.meta
+SuperBounceGame/Assets/Standard Assets/Scripts/CoherentUI
+SuperBounceGame/Assets/Standard Assets/Scripts/CoherentUI.meta
+SuperBounceGame/Assets/Standard Assets/Shaders/CoherentUI
+SuperBounceGame/Assets/Standard Assets/Shaders/CoherentUI.meta
+SuperBounceGame/Assets/StreamingAssets/CoherentUI_Host
+SuperBounceGame/Assets/StreamingAssets/CoherentUI_Host.meta
+SuperBounceGame/Assets/StreamingAssets/CoherentUI64_Native.dll
+SuperBounceGame/Assets/StreamingAssets/CoherentUI64_Native.dll.meta
+SuperBounceGame/Assets/StreamingAssets/CoherentUINet.dll64
+SuperBounceGame/Assets/StreamingAssets/CoherentUINet.dll64.meta
+SuperBounceGame/Assets/StreamingAssets/D3DCompiler_43.dll
+SuperBounceGame/Assets/StreamingAssets/D3DCompiler_43.dll.meta
+SuperBounceGame/Assets/StreamingAssets/d3dx9_43.dll
+SuperBounceGame/Assets/StreamingAssets/d3dx9_43.dll.meta
+SuperBounceGame/Assets/Plugins/CoherentUI*
+SuperBounceGame/Assets/Plugins/CoherentUI*.meta
+SuperBounceGame/Assets/Plugins/D3DCompiler_43.dll
+SuperBounceGame/Assets/Plugins/D3DCompiler_43.dll.meta
+SuperBounceGame/Assets/Plugins/d3dx9_43.dll
+SuperBounceGame/Assets/Plugins/d3dx9_43.dll.meta
+SuperBounceGame/Assets/Plugins/libCoherentUI_Native.so
+SuperBounceGame/Assets/Plugins/libCoherentUI_Native.so.meta
+SuperBounceGame/Assets/Plugins/iOS/CoherentUI.mm
+SuperBounceGame/Assets/Plugins/iOS/CoherentUI.mm.meta
+SuperBounceGame/Assets/Plugins/iOS/libCoherentUIMobile.a
+SuperBounceGame/Assets/Plugins/iOS/libCoherentUIMobile.a.meta
+SuperBounceGame/Assets/Plugins/Android/CoherentAndroid.jar
+SuperBounceGame/Assets/Plugins/Android/CoherentAndroid.jar.meta
+SuperBounceGame/Assets/Plugins/Android/libCoherentAndroidNative.so
+SuperBounceGame/Assets/Plugins/Android/libCoherentAndroidNative.so.meta
+SuperBounceGame/Assets/WebPlayerTemplates/uiresources
+SuperBounceGame/Assets/WebPlayerTemplates/uiresources.meta
+SuperBounceGame/Assets/Gizmos/Coherent_UI_docs.png
+SuperBounceGame/Assets/Gizmos/Coherent_UI_docs.png.meta
+SuperBounceGame/Assets/Gizmos/Coherent_UI_inspector.png
+SuperBounceGame/Assets/Gizmos/Coherent_UI_inspector.png.meta
+SuperBounceGame/Assets/Gizmos/Coherent_UI_support.png
+SuperBounceGame/Assets/Gizmos/Coherent_UI_support.png.meta
+SuperBounceGame/Assets/Gizmos/CoherentUIView_icon.png
+SuperBounceGame/Assets/Gizmos/CoherentUIView_icon.png.meta
+
+
