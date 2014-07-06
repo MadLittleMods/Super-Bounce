@@ -1,0 +1,18 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Player.cs">
+    <Files>
+      <File FileName="Assets\Scripts\HeadMove.cs" Line="95" Column="5" />
+      <File FileName="Assets\Scripts\UI\GeneralUI.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Managers\GameManager.cs" Line="258" Column="30" />
+      <File FileName="Assets\Scripts\Player.cs" Line="215" Column="5" />
+      <File FileName="Assets\Scripts\MimicChildOf.cs" Line="31" Column="8" />
+      <File FileName="Assets\Scripts\Managers\TestingManager.cs" Line="4" Column="93" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <AuthorInfo Name="Eric Eastwood" Email="" Copyright="" Company="ericeastwood.com" Trademark="" />
+</Properties>

@@ -22,24 +22,33 @@ SuperBounceGame/UIResources/fonts/mission_gothic/
 
 # Ignore some of the non-code assets
 SuperBounceGame/Assets/Models/
+SuperBounceGame/Assets/Models.meta
 SuperBounceGame/Assets/Sounds/
+SuperBounceGame/Assets/Sounds.meta
 
 # Ignore the Noble Logger
 SuperBounceGame/Assets/Plugins/Noble.cs
+SuperBounceGame/Assets/Plugins/Noble.cs.meta
 SuperBounceGame/Assets/Plugins/NobleInterface.cs
+SuperBounceGame/Assets/Plugins/NobleInterface.cs.meta
 SuperBounceGame/Assets/Plugins/NobleLogger.cs
+SuperBounceGame/Assets/Plugins/NobleLogger.cs.meta
 SuperBounceGame/Assets/Plugins/GUI Elements/
 SuperBounceGame/Assets/Editor/NobleConsoleWindow.cs
+SuperBounceGame/Assets/Editor/NobleConsoleWindow.cs.meta
 # Ignore the json library that we use in the logger
 SuperBounceGame/Assets/Plugins/Newtonsoft.Json.dll
 SuperBounceGame/Assets/Plugins/Newtonsoft.Json.dll.meta
 
 # Ignore the image effects package
 SuperBounceGame/Assets/Standard Assets/Image Effects (Pro Only)/
-SuperBounceGame/Assets/Editor/Image Effects
+SuperBounceGame/Assets/Standard Assets/Image Effects (Pro Only).meta
+SuperBounceGame/Assets/Editor/Image Effects/
+SuperBounceGame/Assets/Editor/Image Effects.meta
 
 # Ignore the matcap package
 SuperBounceGame/Assets/JMO Assets/
+SuperBounceGame/Assets/JMO Assets.meta
 
 
 

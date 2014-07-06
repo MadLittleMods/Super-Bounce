@@ -1,0 +1,13 @@
+.map-holder
+{
+	display: flex;
+	flex-direction: row;
+
+	justify-content: space-between; /* align items in Main Axis */
+	align-items: flex-start; /* align items in Cross Axis */
+	align-content: space-around; /* Extra space in Cross Axis */
+	
+	flex-wrap: wrap;
+}
+
+
