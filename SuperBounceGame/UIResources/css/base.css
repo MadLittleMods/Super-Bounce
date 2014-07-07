@@ -140,6 +140,18 @@ body
 	background: rgba(30, 140, 230, .45);
 }
 
+a, a:link 
+{
+	outline: 0;
+	text-decoration: none;
+
+	-webkit-transition: all 0.2s linear;  
+	-moz-transition: all 0.2s linear; 
+	-o-transition: all 0.2s linear; 
+	transition: all 0.2s linear;
+}
+
+
 h1, h2, h3, h4, h5, h6 {
 	padding: 0;
 	margin: 0;

@@ -30,6 +30,7 @@ require.config({
 		'module-lobby': 'modules/lobby-module',
 		'module-server-browser': 'modules/server-browser-module',
 		'module-options': 'modules/options-module',
+		'module-credits': 'modules/credits-module',
 
 
 	},
@@ -85,6 +86,7 @@ require(['jquery', 'coherent', 'renderer'], function($, coherent, renderer) {
 		/* */
 		var serverListContext = {
 			servers: [
+				/* * /
 				{
 					guid: 'sa1234ffds',
 					gameName: "(fake) My Server",
@@ -125,6 +127,7 @@ require(['jquery', 'coherent', 'renderer'], function($, coherent, renderer) {
 					map: "Midship",
 					gameType: "Territories"
 				}
+				/* */
 				/* * /
 				,
 				{ guid: 'sa1234ffds', gameName: "(fake) Another Server", description: "24/7 gameplay galore", pwProtected: true, connectedPlayers: 4, playerLimit: 8, map: "Blood Gulch", gameType: "Territories" },
@@ -157,6 +160,10 @@ require(['jquery', 'coherent', 'renderer'], function($, coherent, renderer) {
 
 
 		renderer.replace('module-options', {}, {}, $('.main-ui-layout-body.options'), function(attachReturn) {
+			console.log('template rendered');
+		});
+
+		renderer.replace('module-credits', {}, {}, $('.main-ui-layout-body.quit'), function(attachReturn) {
 			console.log('template rendered');
 		});
 

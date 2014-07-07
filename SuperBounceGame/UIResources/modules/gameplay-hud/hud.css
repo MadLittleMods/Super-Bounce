@@ -110,3 +110,84 @@
 	-moz-border-radius: 50%;
 	border-radius: 50%;
 }
+
+
+
+
+
+
+
+.controls-container
+{
+	position: fixed;
+	top: 8px;
+	left: 8px;
+	right: 0;
+	bottom: 0;
+	
+	pointer-events: none;
+}
+
+.keycap-holder
+{
+	display: -moz-inline-stack;
+	display: inline-block;
+	vertical-align: top;
+	zoom: 1;
+	*display: inline;
+	
+	text-align: center;
+}
+
+.keycap
+{
+	display: -moz-inline-stack;
+	display: inline-block;
+	vertical-align: top;
+	zoom: 1;
+	*display: inline;
+	
+	width: 40px;
+	height: 40px;
+	position: relative;
+	z-index: 1;
+	
+	margin: 2px;
+	padding-top: 6px;
+	padding-left: 8px;
+	
+	background: #aaaaaa;
+	border: 1px solid rgba(0, 0, 0, .1);
+
+	color: #444444;
+	text-align: left;
+	
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+}
+
+.keycap:before
+{
+	content: '';
+	
+	position: absolute;
+	top: 2px;
+	bottom: 4px;
+	right: 4px;
+	left: 4px;
+	
+	z-index: -1;
+	
+	 background: #cccccc;
+	 border: 1px solid rgba(255, 255, 255, .1);
+	
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+}
+
+.keycap.longer
+{
+	width: 80px; 
+}

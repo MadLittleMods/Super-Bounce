@@ -119,6 +119,14 @@ define([
 						});
 					}, require);
 				});
+
+
+				// Open links with the `open-in-browser` class in the desktop browser
+				$(document).on('click', '.open-in-browser', function(e) {
+					engine.call('GUIOpenURLInBrowser', $(this).attr("href"));
+
+					e.preventDefault();
+				});
 			});
 
 		}

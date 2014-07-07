@@ -33,17 +33,23 @@ public class GeneralUI : MonoBehaviour {
 		// so it doesn't get disabled when we change levels
 		networkView.group = 1;
 
-
-		this.isMenuUIUp = true;
-
-		this.m_View = GetComponent<CoherentUIView>();
-		this.m_View.OnViewCreated += (view) => {this.viewReady = true;};
-		this.m_View.OnViewDestroyed += () => {this.viewReady = false;};
 		
-		// Make the Coherent View receive input
-		if(this.m_View)
+		this.m_View = GetComponent<CoherentUIView>();
+
+		if(this.m_View != null)
+		{
+			this.m_View.OnViewCreated += (view) => {this.viewReady = true;};
+			this.m_View.OnViewDestroyed += () => {this.viewReady = false;};
+			
+			// Make the Coherent View receive input
 			this.m_View.ReceivesInput = true;
+		}
+
+
+		
+		this.isMenuUIUp = true;
 	}
+
 	
 	// Update is called once per frame
 	void Update () {
@@ -61,6 +67,11 @@ public class GeneralUI : MonoBehaviour {
 		}
 	}
 
+	[Coherent.UI.CoherentMethod("GUIOpenURLInBrowser")]
+	public void GUIOpenURLInBrowser(string url)
+	{
+		Application.OpenURL(url);
+	}
 	
 	[Coherent.UI.CoherentMethod("GUIGetLevelList")]
 	public List<string> GUIGetLevelList()

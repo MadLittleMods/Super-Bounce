@@ -16,12 +16,20 @@ define(['jquery', 'jquery-utility'], function($, $utility) {
 					engine.call('GUISetMasterVolume', 'soundeffect', parseFloat($(this).val()));
 				});
 
-				// Set the input to the last saved value
-				engine.call('GetMasterVolume', 'Music').then(function() {
-					$(restrictTo).filterFind('input[type="range"].master_music_volume').attr('value', arguments[0]);
+				// Mouse sensitivity
+				$(restrictTo).filterFind('input[type="range"].mouse_sensitivity').change(function () {
+					engine.call('SetMouseSensitivity', parseFloat($(this).val()));
 				});
-				engine.call('GetMasterVolume', 'SoundEffect').then(function() {
-					$(restrictTo).filterFind('input[type="range"].master_soundeffect_volume').attr('value', arguments[0]);
+
+				// Set the input to the last saved value
+				engine.call('GetMasterVolume', 'Music').then(function(volume) {
+					$(restrictTo).filterFind('input[type="range"].master_music_volume').attr('value', volume);
+				});
+				engine.call('GetMasterVolume', 'SoundEffect').then(function(volume) {
+					$(restrictTo).filterFind('input[type="range"].master_soundeffect_volume').attr('value', volume);
+				});
+				engine.call('GetMouseSensitivity').then(function(sensitivity) {
+					$(restrictTo).filterFind('input[type="range"].mouse_sensitivity').attr('value',sensitivity);
 				});
 			});
 

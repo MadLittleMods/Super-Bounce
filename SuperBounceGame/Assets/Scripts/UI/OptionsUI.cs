@@ -52,11 +52,35 @@ public class OptionsUI : MonoBehaviour {
 		else if(audioTypeString.ToLower() == "soundeffect")
 			this.audioManager.SetMasterVolume(AudioBase.AudioType.SoundEffect, volume);
 	}
-
 	[Coherent.UI.CoherentMethod("GetMasterVolume")]
 	public float GetMasterVolume(string audioTypeString)
 	{
 		// Return the master volume for that type
 		return this.audioManager.GetMasterVolume(UtilityMethods.ParseEnum<AudioBase.AudioType>(audioTypeString));
+	}
+
+	[Coherent.UI.CoherentMethod("SetMouseSensitivity")]
+	public void GUISensitivity(float sensitivity)
+	{
+		var headMoveComponent = Camera.main.GetComponent<HeadMove>();
+		if(headMoveComponent != null)
+		{
+			sensitivity = Mathf.Clamp(sensitivity, 0f, 100f);
+
+			headMoveComponent.sensitivityX = sensitivity;
+			headMoveComponent.sensitivityY = sensitivity;
+		}
+	}
+	[Coherent.UI.CoherentMethod("GetMouseSensitivity")]
+	public float GetMouseSensitivity()
+	{
+		var headMoveComponent = Camera.main.GetComponent<HeadMove>();
+		if(headMoveComponent != null)
+		{
+			// Return the master volume for that type
+			return headMoveComponent.sensitivityX;
+		}
+
+		return 8f;
 	}
 }

@@ -23,6 +23,11 @@ body
 	position: absolute;
 }
 
+.hud-holder
+{
+	overflow: hidden;
+}
+
 .main-ui-holder
 {
 	background: #1f1f1f;
@@ -48,12 +53,31 @@ body
 	display: none;
 	flex: 1;
 	overflow: auto;
+	padding-bottom: 100px; /* Compensate for Coherent watermark */
 }
 .main-ui-layout-body.active
 {
 	display: block;
 }
 
+.main-ui-layout-body a, .main-ui-layout-body a:link
+{ 
+	color: #2242aa;
+	text-decoration: none;
+	border-bottom: 1px solid;
+}
+.main-ui-layout-body a:visited 
+{ 
+	
+}
+.main-ui-layout-body a:hover   
+{ 
+	color: #3160F6;
+}
+.main-ui-layout-body a:active  
+{ 
+	color: #97F625;
+}
 
 .main-ui-body-title
 {

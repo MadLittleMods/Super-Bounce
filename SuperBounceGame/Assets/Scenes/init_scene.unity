@@ -335,8 +335,8 @@ MonoBehaviour:
   m_IsOnDemand: 0
   m_ControlTimeOnDemand: 0
   m_TargetFramerate: 60
-  m_DrawAfterPostEffects: 0
-  m_FlipY: 1
+  m_DrawAfterPostEffects: 1
+  m_FlipY: 0
   m_Filtering: 1
   m_ReceivesInput: 0
   m_Context: {fileID: 0}
@@ -527,8 +527,8 @@ MonoBehaviour:
   characterDriver: {fileID: 0}
   EnableInput: 1
   axes: 0
-  sensitivityX: 6
-  sensitivityY: 6
+  sensitivityX: 8
+  sensitivityY: 8
   rotationMinimumX: -40
   rotationMaximumX: 40
   rotationMinimumY: -89

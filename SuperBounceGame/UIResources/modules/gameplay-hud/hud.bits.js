@@ -202,6 +202,17 @@ define([
 					console.log('game time box template rendered');
 				}, require);
 
+
+
+				// Toggle Controls
+				$(document).on('keypress', function(evt) {
+					console.log(evt);
+					// If we push the `/`or`?` key
+					if(evt.charCode == 47 || evt.charCode == 63)
+						$(restrictTo).filterFind('.controls-container').fadeToggle(200);
+				});
+
+
 			});
 
 		}
