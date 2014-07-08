@@ -129,6 +129,7 @@ MonoBehaviour:
   internetTapQueue: {fileID: 577848425}
   refreshTimeOut: 5
   uniqueGameName: rkmlqu0bsv0s4rbtraomyicgb8dd8wpgbq5yks62
+  gameVersion: .300000012
   serverPort: 55789
   serverPorts: edd90000e8d90000d9d90000d7d90000d6d90000d3d90000d0d90000c8d90000c2d90000c1d90000
 --- !u!114 &577848415
@@ -148,7 +149,7 @@ MonoBehaviour:
   LevelList:
   - Level01
   - Level02
-  GameTimeLimit: 180
+  GameTimeLimit: -1
   ScoreLimit: 250
   PlayerHeight: 1.85000002
 --- !u!4 &577848416

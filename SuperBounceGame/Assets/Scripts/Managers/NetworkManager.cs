@@ -72,6 +72,8 @@ public class NetworkManager : MonoBehaviour {
 	
 	public class NetworkConnectionErrorResponse
 	{
+		public NetworkConnectionErrorFancy errorType = NetworkConnectionErrorFancy.NoError;
+		public ServerData serverData;
 		public string message = "";
 
 		// We use "Yet" on the following variables because a errors response can mean
@@ -80,59 +82,52 @@ public class NetworkManager : MonoBehaviour {
 		// if we really connected until we get Network.OnFailedToConnect()` or `Network.OnConnectedToServer()`
 		public bool noErrorsYet = false; // Always assume error unless otherwise specified
 		public bool ableToConnectYet = false;
+
+		public NetworkConnectionErrorResponse()
+		{
+
+		}
+
+		public NetworkConnectionErrorResponse(NetworkConnectionErrorFancy errorType, ServerData serverData)
+		{
+			this.errorType = errorType;
+			this.serverData = serverData;
+		}
+	}
+
+	public enum NetworkConnectionErrorFancy
+	{
+		// Start of same as UnityEngine.NetworkConnectionError
+		NoError,
+		RSAPublicKeyMismatch,
+		InvalidPassword,ConnectionFailed,
+		TooManyConnectedPlayers,
+		ConnectionBanned,
+		AlreadyConnectedToServer,
+		AlreadyConnectedToAnotherServer,
+		CreateSocketOrThreadFailure,
+		IncorrectParameters,
+		EmptyConnectTarget,
+		InternalDirectConnectFailed,
+		NATTargetNotConnected,
+		NATTargetConnectionLost,
+		NATPunchthroughFailed,
+		// End of same as UnityEngine.NetworkConnectionError
+		
+		IncompatibleGameVersions
 	}
 
 	public delegate void ServerListUpdatedEventHandler(ServerData[] serverList);
-	public event ServerListUpdatedEventHandler OnServerListUpdated;
+	public event ServerListUpdatedEventHandler OnServerListUpdated = delegate { };
 
 	public delegate void RegisterServerAttemptEventHandler(ServerCreationEvent sce);
-	public event RegisterServerAttemptEventHandler OnServerRegisterAttempt;
+	public event RegisterServerAttemptEventHandler OnServerRegisterAttempt = delegate { };
 
 	public delegate void AsyncConnectInfoEventHandler(NetworkConnectionErrorResponse response);
-	public event AsyncConnectInfoEventHandler OnAsyncConnectInfoEvent;
+	public event AsyncConnectInfoEventHandler OnAsyncConnectInfoEvent = delegate { };
 
 	public delegate void DisconnectedFromServerEventHandler(NetworkDisconnection info);
-	public event DisconnectedFromServerEventHandler OnDisconnected;
-
-	// Use this to trigger the event
-	protected virtual void ThisServerListUpdated(ServerData[] serverList)
-	{
-		ServerListUpdatedEventHandler handler = OnServerListUpdated;
-		if(handler != null)
-		{
-			handler(serverList);
-		}
-	}
-	
-	// Use this to trigger the event
-	protected virtual void ThisRegisterServerAttempt(ServerCreationEvent sce)
-	{
-		RegisterServerAttemptEventHandler handler = OnServerRegisterAttempt;
-		if(handler != null)
-		{
-			handler(sce);
-		}
-	}
-
-	// Use this to trigger the event
-	protected virtual void ThisAsyncConnectInfo(NetworkConnectionErrorResponse response)
-	{
-		AsyncConnectInfoEventHandler handler = OnAsyncConnectInfoEvent;
-		if(handler != null)
-		{
-			handler(response);
-		}
-	}
-
-	// Use this to trigger the event
-	protected virtual void ThisDisconnected(NetworkDisconnection info)
-	{
-		DisconnectedFromServerEventHandler handler = OnDisconnected;
-		if(handler != null)
-		{
-			handler(info);
-		}
-	}
+	public event DisconnectedFromServerEventHandler OnDisconnected = delegate { };
 
 	[SerializeField]
 	private PlayerManager playerManager;
@@ -148,6 +143,9 @@ public class NetworkManager : MonoBehaviour {
 
 	[SerializeField]
 	private string uniqueGameName;
+
+	[SerializeField]
+	private float gameVersion = 0f;
 
 	[SerializeField]
 	private int serverPort = 55789;
@@ -260,7 +258,7 @@ public class NetworkManager : MonoBehaviour {
 
 		this.lanManager.OnServerListUpdated += (serverList) => {
 			// Fire the overrall network server list updated
-			this.ThisServerListUpdated(this.CombinedServerListArray);
+			this.OnServerListUpdated(this.CombinedServerListArray);
 		};
 	}
 	
@@ -306,7 +304,7 @@ public class NetworkManager : MonoBehaviour {
 			}, () => {
 				// TODO: Tell our host config dialog that you can't do that
 				Debug.Log("Can't Register the server online: No access to the internet");
-				this.ThisRegisterServerAttempt(ServerCreationEventCode.MSRegistrationFailedNoInternet);
+				this.OnServerRegisterAttempt(ServerCreationEventCode.MSRegistrationFailedNoInternet);
 			});
 		
 		}
@@ -374,6 +372,8 @@ public class NetworkManager : MonoBehaviour {
 			
 			sData.map = serverMap;
 			sData.gameType = serverGameType;
+
+			sData.gameVersion = this.gameVersion;
 			
 			this.ServerData = sData;
 			
@@ -387,7 +387,7 @@ public class NetworkManager : MonoBehaviour {
 					// You probably won't get here because you check for internet higher in the stack
 					// TODO: Tell our host config dialog that you can't do that
 					Debug.Log("Can't Register the server online: No access to the internet");
-					this.ThisRegisterServerAttempt(ServerCreationEventCode.MSRegistrationFailedNoInternet);
+					this.OnServerRegisterAttempt(ServerCreationEventCode.MSRegistrationFailedNoInternet);
 				}
 			}
 			else
@@ -396,7 +396,7 @@ public class NetworkManager : MonoBehaviour {
 				this.lanManager.StartListening();
 				
 				// We have essentially registered the server locally
-				this.ThisRegisterServerAttempt(ServerCreationEventCode.RegistrationSucceeded); // Fire Event
+				this.OnServerRegisterAttempt(ServerCreationEventCode.RegistrationSucceeded); // Fire Event
 			}
 		}
 	}
@@ -417,7 +417,7 @@ public class NetworkManager : MonoBehaviour {
 		this.serverList.Clear();
 		this.lanManager.ClearServerList();
 		// We cleared the lists so fire the event
-		this.ThisServerListUpdated(this.CombinedServerListArray); // Fire Event
+		this.OnServerListUpdated(this.CombinedServerListArray); // Fire Event
 
 		// Start finding servers that are LAN
 		this.lanManager.StartDiscovery();
@@ -435,20 +435,30 @@ public class NetworkManager : MonoBehaviour {
 		Debug.Log("Trying to Connect");
 		// Not all errors are immediate as Network.Connect is async
 		// Also check for errors in OnFailedToConnect()
-		NetworkConnectionError connectError;
+		NetworkConnectionErrorFancy connectError = NetworkConnectionErrorFancy.NoError;
 
+		// Grab the full data of this guid
 		this.ServerData = this.CombinedServerList[guid];
-
-		// Use nat punchthrough
-		if(this.ServerData.useNat)
-			connectError = Network.Connect(guid, pw);
-		// Or just use IP, port
-		else
-			connectError = Network.Connect(this.ServerData.ip, this.ServerData.port, pw);
-
+		if(this.ServerData != null)
+		{
+			if(this.ServerData.gameVersion != this.gameVersion)
+			{
+				// We don't have the same version as them
+				connectError = NetworkConnectionErrorFancy.IncompatibleGameVersions;
+			}
+			else
+			{
+				// Use nat punchthrough
+				if(this.ServerData.useNat)
+					connectError = Network.Connect(guid, pw).ToFancyError();
+				// Or just use IP, port
+				else
+					connectError = Network.Connect(this.ServerData.ip, this.ServerData.port, pw).ToFancyError();
+			}
+		}
 
 		// TODO: stuff with the message
-		return this.GetResponseFromNetworkConnectionError(connectError);
+		return this.GetResponseFromNetworkConnectionError(connectError, this.ServerData);
 
 	}
 
@@ -541,7 +551,7 @@ public class NetworkManager : MonoBehaviour {
 		NetworkConnectionErrorResponse response = new NetworkConnectionErrorResponse();
 		response.noErrorsYet = true;
 		response.ableToConnectYet = true;
-		this.ThisAsyncConnectInfo(response);
+		this.OnAsyncConnectInfoEvent(response);
 
 		// Put the player in the game if the game is already going
 		if(this.gameManager.GameStatus == GameManager.GameState.started)
@@ -587,7 +597,7 @@ public class NetworkManager : MonoBehaviour {
 
 		// Call the event
 		// This will probably trigger a dialog in the UI
-		this.ThisDisconnected(info);
+		this.OnDisconnected(info);
 	}
 
 	public void PlayerDisconnectCleanUp()
@@ -606,7 +616,7 @@ public class NetworkManager : MonoBehaviour {
 		// We are not connected anymore
 		this.IsConnected = false;
 
-		this.ThisAsyncConnectInfo(this.GetResponseFromNetworkConnectionError(connectError));
+		this.OnAsyncConnectInfoEvent(this.GetResponseFromNetworkConnectionError(connectError.ToFancyError(), null));
 	}
 
 	void OnMasterServerEvent(MasterServerEvent mse)
@@ -619,7 +629,7 @@ public class NetworkManager : MonoBehaviour {
 			// See; http://answers.unity3d.com/questions/660868/random-masterservereventregistrationsucceeded-on-p.html
 			// Only fire the event once
 			if(!this.ServerRegistered)
-				this.ThisRegisterServerAttempt(mse); // Fire Event
+				this.OnServerRegisterAttempt(mse); // Fire Event
 
 			this.ServerRegistered = true;
 		}
@@ -643,7 +653,7 @@ public class NetworkManager : MonoBehaviour {
 			//var asdf = new List<ServerData>(this.serverDataList.Values).ToArray();
 
 			// Fire Event
-			this.ThisServerListUpdated(this.CombinedServerListArray);
+			this.OnServerListUpdated(this.CombinedServerListArray);
 		}
 	}
 
@@ -660,56 +670,60 @@ public class NetworkManager : MonoBehaviour {
 	}
 
 
-	public NetworkConnectionErrorResponse GetResponseFromNetworkConnectionError(NetworkConnectionError connectError)
+	public NetworkConnectionErrorResponse GetResponseFromNetworkConnectionError(NetworkConnectionErrorFancy connectError, ServerData sData)
 	{
-		NetworkConnectionErrorResponse response = new NetworkConnectionErrorResponse();
+		NetworkConnectionErrorResponse response = new NetworkConnectionErrorResponse(connectError, sData);
+
 		string message = "";
 
-		if(connectError == NetworkConnectionError.NoError) {
+		if(connectError == NetworkConnectionErrorFancy.NoError) {
 			message = "Connected to Server";
 			response.noErrorsYet = true;
 		}
-		else if(connectError == NetworkConnectionError.RSAPublicKeyMismatch) {
+		else if(connectError == NetworkConnectionErrorFancy.RSAPublicKeyMismatch) {
 			message = "RSA public key did not match what the system we connected to is using.";
 		}
-		else if(connectError == NetworkConnectionError.InvalidPassword) {
+		else if(connectError == NetworkConnectionErrorFancy.InvalidPassword) {
 			message = "Invalid Password. Could not connect to server";
 		}
-		else if(connectError == NetworkConnectionError.ConnectionFailed) {
+		else if(connectError == NetworkConnectionErrorFancy.ConnectionFailed) {
 			message = "Could not connect to server";
 		}
-		else if(connectError == NetworkConnectionError.TooManyConnectedPlayers) {
+		else if(connectError == NetworkConnectionErrorFancy.TooManyConnectedPlayers) {
 			message = "Server Full. Could not connect to server";
 		}
-		else if(connectError == NetworkConnectionError.ConnectionBanned) {
+		else if(connectError == NetworkConnectionErrorFancy.ConnectionBanned) {
 			message = "You are banned from the system we attempted to connect to (likely temporarily).";
 		}
-		else if(connectError == NetworkConnectionError.AlreadyConnectedToServer) {
+		else if(connectError == NetworkConnectionErrorFancy.AlreadyConnectedToServer) {
 			message = "You are already connected to this particular server (can happen after fast disconnect/reconnect).";
 		}
-		else if(connectError == NetworkConnectionError.AlreadyConnectedToAnotherServer) {
+		else if(connectError == NetworkConnectionErrorFancy.AlreadyConnectedToAnotherServer) {
 			message = "Already Connected to a Server";
 		}
-		else if(connectError == NetworkConnectionError.CreateSocketOrThreadFailure) {
+		else if(connectError == NetworkConnectionErrorFancy.CreateSocketOrThreadFailure) {
 			message = "Internal error while attempting to initialize network interface. Socket possibly already in use.";
 		}
-		else if(connectError == NetworkConnectionError.IncorrectParameters) {
+		else if(connectError == NetworkConnectionErrorFancy.IncorrectParameters) {
 			message = "Incorrect parameters given to Connect function";
 		}
-		else if(connectError == NetworkConnectionError.EmptyConnectTarget) {
+		else if(connectError == NetworkConnectionErrorFancy.EmptyConnectTarget) {
 			message = "No host target given in Connect";
 		}
-		else if(connectError == NetworkConnectionError.InternalDirectConnectFailed) {
+		else if(connectError == NetworkConnectionErrorFancy.InternalDirectConnectFailed) {
 			message = "You could not connect internally to same network NAT enabled server.";
 		}
-		else if(connectError == NetworkConnectionError.NATTargetNotConnected) {
+		else if(connectError == NetworkConnectionErrorFancy.NATTargetNotConnected) {
 			message = "The NAT target you are trying to connect to is not connected to the facilitator server.";
 		}
-		else if(connectError == NetworkConnectionError.NATTargetConnectionLost) {
+		else if(connectError == NetworkConnectionErrorFancy.NATTargetConnectionLost) {
 			message = "Connection lost while attempting to connect to NAT target.";
 		}
-		else if(connectError == NetworkConnectionError.NATPunchthroughFailed) {
+		else if(connectError == NetworkConnectionErrorFancy.NATPunchthroughFailed) {
 			message = "NAT punchthrough attempt has failed. Could not connect to server";
+		}
+		else if(connectError == NetworkConnectionErrorFancy.IncompatibleGameVersions) {
+			message = "The game you are trying to join is using " + (sData != null ? (sData.gameVersion > this.gameVersion ? "a newer" : "an older") : "different") + " version than you";
 		}
 
 		response.message = message;

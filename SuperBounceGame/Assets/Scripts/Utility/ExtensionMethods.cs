@@ -122,6 +122,10 @@ public static class ExtensionMethods
 
 
 
+	public static NetworkManager.NetworkConnectionErrorFancy ToFancyError(this NetworkConnectionError netConnectError)
+	{
+		return (NetworkManager.NetworkConnectionErrorFancy)netConnectError;
+	}
 
 
 

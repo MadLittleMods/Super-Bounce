@@ -26,7 +26,7 @@ define([
 
 	function newServerBrowserMessage(message)
 	{
-		$('.notication-block').html(message);
+		$('.notification-block').html(message);
 	}
 
 	// Generate a pw dialog box

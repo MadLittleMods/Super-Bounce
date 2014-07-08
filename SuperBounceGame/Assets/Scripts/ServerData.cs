@@ -117,6 +117,8 @@ public class ServerData
 	public string map = "";
 	public string gameType = "";
 
+	public float gameVersion = 0f;
+
 
 	public ServerData()
 	{
@@ -145,11 +147,12 @@ public class ServerData
 		this.ParseServerDataSeparatedString(separatedString);
 	}
 
-	public ServerData(string guid, string serverName, string description)
+	public ServerData(string guid, string serverName, string description, float gameVersion)
 	{
 		this.guid = guid;
 		this.serverName = serverName;
 		this.description = description;
+		this.gameVersion = gameVersion;
 	}
 
 	public HostData GetHostData()
@@ -200,6 +203,8 @@ public class ServerData
 		this.map = chunks.GetValueOrDefault("map", "");
 		this.gameType = chunks.GetValueOrDefault("gameType", "");
 
+		this.gameVersion = 0f;
+		corrupt &= float.TryParse(chunks.GetValueOrDefault("gameVersion", "0"), out this.gameVersion);
 
 		return corrupt;
 	}
@@ -225,7 +230,9 @@ public class ServerData
 			{"playerLimit", this.playerLimit.ToString()},
 
 			{"map", this.map},
-			{"gameType", this.gameType}
+			{"gameType", this.gameType},
+
+			{"gameVersion", this.gameVersion.ToString()}
 		};
 
 		return UtilityMethods.GenerateSeparatedString(lanValues);
@@ -240,6 +247,7 @@ public class ServerData
 	{
 		// Tried to put these in order of quickest to fail if differnt
 		return sData != null
+			&& this.gameVersion == sData.gameVersion
 			&& this.status == sData.status 
 			&& this.guid == sData.guid 
 			&& this.ip == sData.ip

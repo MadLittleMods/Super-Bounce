@@ -28,10 +28,9 @@ public class HeadMove : MonoBehaviour {
 	float rotationX = 0f;
 	float rotationY = 0f;
 
-	Vector3 headOriginalUp;
-	Vector3 headOriginalRight;
-
 	Quaternion headOriginalRotation;
+	// We only store this so that when we reset when can truely reset
+	Quaternion bodyOriginalRotation;
 
 
 	private bool hasInitialized = false;
@@ -43,16 +42,41 @@ public class HeadMove : MonoBehaviour {
 
 	public void Init()
 	{
+		this.rotationX = 0f;
+		this.rotationY = 0f;
+
 		if(this.headTransform != null)
 		{
-			this.headOriginalUp = this.headTransform.up;
-			this.headOriginalRight = this.headTransform.right;
 			this.headOriginalRotation = this.headTransform.rotation;
 
+			// We only initialize if we have a head as the body is optional
 			this.hasInitialized = true;
 		}
 		else
 			Debug.LogWarning("Missing headTransform in HeaderMove script");
+
+
+		if(this.bodyTransform != null)
+		{
+			this.bodyOriginalRotation = this.bodyTransform.rotation;
+		}
+	}
+
+	public void Reset()
+	{
+		this.rotationX = 0f;
+		this.rotationY = 0f;
+
+		if(this.headTransform != null && this.headOriginalRotation != null)
+		{
+			// Reset the head to the original
+			this.headTransform.rotation = this.headOriginalRotation;
+		}
+
+		if(this.bodyTransform != null && this.bodyOriginalRotation != null)
+		{
+			this.bodyTransform.rotation = this.bodyOriginalRotation;
+		}
 	}
 	
 	// Has to be LateUpdate because of Mecanim
@@ -108,7 +132,7 @@ public class HeadMove : MonoBehaviour {
 					// Counter-act the body by rotating the head back into place
 					/* */
 					Vector3 bodyForwardDirection = Vector3.Scale(this.bodyTransform.forward, new Vector3(1f, 0f, 1f));
-					Quaternion qTo2 = Quaternion.LookRotation(bodyForwardDirection) * Quaternion.AngleAxis(rotationY, -headOriginalRight);
+					Quaternion qTo2 = Quaternion.LookRotation(bodyForwardDirection) * Quaternion.AngleAxis(rotationY, -Vector3.right);
 					this.headTransform.rotation = qTo2;
 					/* */
 					

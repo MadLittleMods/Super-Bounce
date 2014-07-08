@@ -16,6 +16,7 @@ define(['module', 'require', 'jquery', 'jquery-utility', 'jquery-validate', 'hbs
 		server_obj.server_name = $(form).find('#server-name-input-id').val();
 		server_obj.lan =  $(form).find('#server-lan-input-id').is(':checked') ? "true" : "false";
 		server_obj.max_players = $(form).find('#max-players-input-id').val();
+		server_obj.time_limit = $(form).find('#time-limit-input-id').val();
 		server_obj.server_description = $(form).find('#server-description-input-id').val();
 		server_obj.server_pw = $(form).find('#server-pw-input-id').val();
 		server_obj.server_map = $(form).find('#server-map-input-id').val();
@@ -78,6 +79,9 @@ define(['module', 'require', 'jquery', 'jquery-utility', 'jquery-validate', 'hbs
 						'max-players': {
 							required: true
 						},
+						'time-limit': {
+							required: true
+						},
 						'server-description': {
 
 						},
@@ -95,6 +99,14 @@ define(['module', 'require', 'jquery', 'jquery-utility', 'jquery-validate', 'hbs
 						console.log('submitting host config form');
 						createServer();
 					}
+				});
+
+
+				$('.server-creation-form #time-limit-input-id').on('input propertychange change', function() {
+					if($(this).val() <= 0)
+						$('#time-limit-input-id-extra-info').html("inf");
+					else
+						$('#time-limit-input-id-extra-info').html("");
 				});
 
 

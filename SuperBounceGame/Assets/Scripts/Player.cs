@@ -8,10 +8,32 @@
  */
 
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviour 
+{
+	public class TeleportEventArgs : EventArgs
+	{
+		public Vector3 position;
+		public Quaternion rotation;
+
+		public TeleportEventArgs()
+		{
+			
+		}
+
+		public TeleportEventArgs(Vector3 position, Quaternion rotation)
+		{
+			this.position = position;
+			this.rotation = rotation;
+		}
+	}
+	public delegate void TeleportEventHandler(TeleportEventArgs e);
+	// Having the `delegate { }` makes us able not have to check for null when firing the event
+	public event TeleportEventHandler OnTeleport = delegate { };
+
 
 	public struct PlayerData
 	{
@@ -106,6 +128,7 @@ public class Player : MonoBehaviour {
 
 
 	PlayerManager playerManager;
+	GameManager gameManager;
 
 
 	// We just use this to keep track
@@ -154,14 +177,34 @@ public class Player : MonoBehaviour {
 			
 			// Grab the Player Manager
 			this.playerManager = managerObject.GetComponent<PlayerManager>();
+			this.gameManager = managerObject.GetComponent<GameManager>();
+
+			if(this.gameManager != null)
+			{
+				// When the game ends reset the mecanim
+				this.gameManager.OnGameEnded += (sender) => {
+					// Set to false when we start
+					// We set it back to true at the end
+					if(this.networkedAnimator != null)
+					{
+						this.networkedAnimator.SetBool("IsInit", false);
+						var headMoveComponent = Camera.main.GetComponent<HeadMove>();
+						if(headMoveComponent != null)
+						{
+							headMoveComponent.EnableInput = false;
+							headMoveComponent.Reset();
+						}
+					}
+				};
+			}
 		}
 
 		if(networkView.isMine) {
 			Debug.Log("Start run for my player object");
 			this.IsMine = true;
-			this.Gamertag = "User" + Random.Range(0, 9) + Random.Range(0, 9) + Random.Range(0, 9);
+			this.Gamertag = "User" + UnityEngine.Random.Range(0, 9) + UnityEngine.Random.Range(0, 9) + UnityEngine.Random.Range(0, 9);
 
-			this.PersonalColor = new HSBColor(Random.Range(0f, 1f), Random.Range(.8f, 1f), Random.Range(.8f, 1f), 1).ToColor();
+			this.PersonalColor = new HSBColor(UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(.8f, 1f), UnityEngine.Random.Range(.8f, 1f), 1).ToColor();
 			this.PlayerTeam = Team.Individual;
 		}
 
@@ -180,7 +223,16 @@ public class Player : MonoBehaviour {
 	// Used for when you get spawned into the game and need to attach the camera to ourselves, etc
 	public void HandleSetup()
 	{
-		
+		Debug.Log("Handle Setup");
+
+		// Set to false when we start
+		// We set it back to true at the end
+		if(this.networkedAnimator != null)
+		{
+			this.networkedAnimator.SetBool("IsInit", false);
+		}
+
+
 		// Put the camera in its place
 		if(this.CameraSpawn != null)
 		{
@@ -203,6 +255,9 @@ public class Player : MonoBehaviour {
 		var headMoveComponent = Camera.main.GetComponent<HeadMove>();
 		if(headMoveComponent != null)
 		{
+			headMoveComponent.Reset();
+			headMoveComponent.EnableInput = true;
+
 			if(this.modelPlayerModelExposer != null)
 			{
 				headMoveComponent.headTransform = this.modelPlayerModelExposer.HeadObject.transform;
@@ -228,6 +283,26 @@ public class Player : MonoBehaviour {
 
 	}
 
+	public void TeleportPlayer(Vector3 position, bool maintainVelocity = false)
+	{
+		this.TeleportPlayer(position, transform.rotation, maintainVelocity);
+	}
+	public void TeleportPlayer(Vector3 position, Quaternion rotation, bool maintainVelocity = false)
+	{
+		transform.position = position;
+		transform.rotation = rotation;
+
+		if(this.characterDriver != null)
+		{
+			this.characterDriver.currentState.position = position;
+
+			if(!maintainVelocity)
+				this.characterDriver.currentState.velocity = Vector3.zero;
+		}
+
+		// Fire the event
+		this.OnTeleport(new TeleportEventArgs(transform.position, transform.rotation));
+	}
 
 
 

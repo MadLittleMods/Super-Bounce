@@ -181,9 +181,12 @@ public class PlayerManager : MonoBehaviour {
 		var player = this.GetPlayer(guid);
 		if(player != null)
 		{
-			player.transform.position = position;
-			player.transform.rotation = rotation;
+			player.TeleportPlayer(position, rotation);
+			//player.transform.position = position;
+			//player.transform.rotation = rotation;
 		}
+		else
+			Debug.LogWarning("Unable to spawn Player " + guid + " because it was null");
 	}
 
 	public void SpawnPlayer(string guid, Transform spawnTransform)
@@ -196,7 +199,7 @@ public class PlayerManager : MonoBehaviour {
 		if(this.spawnPointList.Count > 0)
 			this.SpawnPlayer(guid, this.spawnPointList[UnityEngine.Random.Range(0, this.spawnPointList.Count)]);
 		else
-			this.SpawnPlayer(guid, Vector3.zero + new Vector3(0f, 1f, 0f), new Quaternion());
+			this.SpawnPlayer(guid, Vector3.zero + new Vector3(0f, 1f, 0f), Quaternion.identity);
 	}
 
 
