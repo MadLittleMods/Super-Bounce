@@ -4570,8 +4570,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 400608}
   - 114: {fileID: 11400008}
-  - 114: {fileID: 11400020}
-  - 114: {fileID: 11400018}
   - 114: {fileID: 11400022}
   - 54: {fileID: 5400000}
   - 114: {fileID: 11400004}
@@ -4581,6 +4579,9 @@ GameObject:
   - 114: {fileID: 11400028}
   - 148: {fileID: 14800000}
   - 114: {fileID: 11400010}
+  - 114: {fileID: 11400016}
+  - 114: {fileID: 11400014}
+  - 114: {fileID: 11400018}
   m_Layer: 0
   m_Name: PlayerBouncer
   m_TagString: Player
@@ -7532,6 +7533,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &101002
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 401002}
+  - 136: {fileID: 13600000}
+  - 114: {fileID: 11400012}
+  m_Layer: 0
+  m_Name: Head Collider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -10225,7 +10243,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100414}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.90923929, z: .182254463}
+  m_LocalPosition: {x: 0, y: 1.95923901, z: .182254463}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400608}
@@ -12305,7 +12323,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100732}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: .0500000007, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400002}
@@ -12811,6 +12829,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400286}
+  - {fileID: 401002}
   m_Father: {fileID: 400608}
   m_RootOrder: 0
 --- !u!4 &400812
@@ -14044,6 +14063,18 @@ Transform:
   - {fileID: 400362}
   m_Father: {fileID: 400170}
   m_RootOrder: 0
+--- !u!4 &401002
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 101002}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.76055288, z: .0552087128}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400810}
+  m_RootOrder: 1
 --- !u!54 &5400000
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -14054,11 +14085,11 @@ Rigidbody:
   m_Mass: 1
   m_Drag: 0
   m_AngularDrag: .0500000007
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
+  m_Constraints: 112
+  m_CollisionDetection: 2
 --- !u!65 &6500000
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -14069,8 +14100,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: .319999993, y: 1.85000002, z: .200000003}
-  m_Center: {x: 0, y: .925000012, z: 0}
+  m_Size: {x: .349999994, y: 1.95000005, z: .280000001}
+  m_Center: {x: 0, y: .975000024, z: 0}
 --- !u!95 &9500000
 Animator:
   serializedVersion: 3
@@ -14160,10 +14191,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6be7fd27ab827ee40a78e7101b603e43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  forceNetworkViewToBeMineToMove: 1
+  forceGameManagerStatusToMove: 1
   objectsToChangeTeamColor: []
   CameraSpawn: {fileID: 400414}
-  modelPlayerModelExposer: {fileID: 11400006}
   characterDriver: {fileID: 11400018}
+  characterCrouchDriver: {fileID: 11400016}
+  headMoveComponent: {fileID: 11400014}
+  headCameraMimicChildOfComponent: {fileID: 0}
+  modelPlayerModelExposer: {fileID: 11400006}
   networkedAnimator: {fileID: 11400010}
 --- !u!114 &11400010
 MonoBehaviour:
@@ -14177,6 +14213,60 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 9500000}
+--- !u!114 &11400012
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 101002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 090440306e13b3e46910c459573e072e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentTransform: {fileID: 400366}
+  doPosition: 1
+  doRotation: 0
+  attemptChildScale: 0
+--- !u!114 &11400014
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc9bc767b09a8854f88029a72aca0b98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  headTransform: {fileID: 400366}
+  bodyTransform: {fileID: 400608}
+  EnableInput: 1
+  axes: 0
+  sensitivityX: 15
+  sensitivityY: 15
+  rotationMinimumX: -40
+  rotationMaximumX: 40
+  rotationMinimumY: -89
+  rotationMaximumY: 80
+  characterMovementVelocity: {x: 0, y: 0, z: 0}
+--- !u!114 &11400016
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a64e95d9b0964fd48a0bdfbea43efbdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnableMovement: 1
+  crouchHeight: 1.5
+  crouchAnimationSpeed: 3
+  playerBoxCollider: {fileID: 6500000}
+  networkedAnimator: {fileID: 11400010}
+  initSizeCenterRatioY: 2
 --- !u!114 &11400018
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -14185,40 +14275,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 100608}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 726e808bd1ed12646ab62502302d12d7, type: 3}
+  m_Script: {fileID: 11500000, guid: d803b6eace6bc3e49aa8f3fffc8098cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EnableMovement: 1
+  inputSmoothing: .100000001
+  SkinWidth: .0799999982
+  networkedAnimator: {fileID: 11400010}
+  playerAnimatorEventCatcher: {fileID: 11400000}
+  CameraTransform: {fileID: 0}
   maxSurgeSpeed: 5
   maxSwaySpeed: 5
   jumpHeight: 4
   crouchMaxSurgeSpeed: 3
   crouchMaxSwaySpeed: 3
   crouchJumpHeight: 4
-  crouchHeight: 1.5
-  forceNetworkViewToBeMine: 1
-  forceGameManagerStatus: 1
-  networkedAnimator: {fileID: 11400010}
-  playerAnimatorEventCatcher: {fileID: 11400000}
-  playerBoxCollider: {fileID: 6500000}
   jumpSoundEffect: {fileID: 11400002}
   footstepSoundEffect: {fileID: 11400004}
-  useSnapshotInputWhenPaused: 0
   debugJumpYStart: 0
   debugJumpYMax: 0
-  debugPrevPosition: {x: 0, y: 0, z: 0}
-  debugGroundSpeed: 0
---- !u!114 &11400020
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100608}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37fb95e3827a5984a98809df76c26e28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SkinWidth: .0799999982
 --- !u!114 &11400022
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -14230,8 +14305,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14120f701cf36524ca283440ef77aced, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterDriver: {fileID: 11400018}
   bounceSoundEffect: {fileID: 11400024}
-  shouldPlayerDebugSoundEffects: 0
+  shouldPlayDebugSoundEffects: 0
   debugVSoundEffect: {fileID: 11400026}
   debugHSoundEffect: {fileID: 11400028}
   horizontalDistanceLimit: .100000001
@@ -14295,6 +14371,19 @@ MonoBehaviour:
   loop: 0
   volume: .5
   pitch: 1
+--- !u!136 &13600000
+CapsuleCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 101002}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: .25
+  m_Height: .600000024
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!137 &13700000
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

@@ -36,10 +36,24 @@ public class GeneralUI : MonoBehaviour {
 		
 		this.m_View = GetComponent<CoherentUIView>();
 
+
+		// Add some instructions to maybe help them register the trial of coherent
+		var instructionGO = new GameObject("CoherentInstructionGUIText");
+		GUIText instructionGUIText = instructionGO.AddComponent<GUIText>();
+		instructionGUIText.text = "Activate Coherent with registercoherent@superbouncegame.com";
+		instructionGO.transform.position = new Vector3(0.01f, .93f, 0f);
+
 		if(this.m_View != null)
 		{
-			this.m_View.OnViewCreated += (view) => {this.viewReady = true;};
-			this.m_View.OnViewDestroyed += () => {this.viewReady = false;};
+			this.m_View.OnViewCreated += (view) => {
+				this.viewReady = true;
+
+				// Once the coherent view is created, destroy the instructions
+				Destroy(instructionGO);
+			};
+			this.m_View.OnViewDestroyed += () => {
+				this.viewReady = false;
+			};
 			
 			// Make the Coherent View receive input
 			this.m_View.ReceivesInput = true;

@@ -107,7 +107,7 @@ define(['module', 'require', 'jquery', 'jquery-utility', 'jquery-validate', 'hbs
 						$('#time-limit-input-id-extra-info').html("inf");
 					else
 						$('#time-limit-input-id-extra-info').html("");
-				});
+				}).trigger('change');
 
 
 			});

@@ -7,7 +7,8 @@ public class NetworkedAnimator : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+		if(this.animator == null)
+			Debug.LogWarning("Missing animator in NetworkedAnimator component", this);
 	}
 	
 	// Update is called once per frame
@@ -24,7 +25,7 @@ public class NetworkedAnimator : MonoBehaviour {
 			this.animator.SetBool(name, value);
 
 			if(networkView.isMine)
-				networkView.RPC("SetBool", RPCMode.OthersBuffered, name, value);
+				networkView.RPC("SetBool", RPCMode.Others, name, value);
 		}
 	}
 
@@ -36,7 +37,7 @@ public class NetworkedAnimator : MonoBehaviour {
 			this.animator.SetFloat(name, value);
 
 			if(networkView.isMine)
-				networkView.RPC("SetFloat", RPCMode.OthersBuffered, name, value);
+				networkView.RPC("SetFloat", RPCMode.Others, name, value);
 		}
 	}
 
@@ -48,7 +49,7 @@ public class NetworkedAnimator : MonoBehaviour {
 			this.animator.SetInteger(name, value);
 			
 			if(networkView.isMine)
-				networkView.RPC("SetInt", RPCMode.OthersBuffered, name, value);
+				networkView.RPC("SetInt", RPCMode.Others, name, value);
 		}
 	}
 }

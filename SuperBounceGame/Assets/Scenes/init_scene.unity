@@ -277,7 +277,6 @@ GameObject:
   - 124: {fileID: 661556711}
   - 81: {fileID: 661556710}
   - 114: {fileID: 661556709}
-  - 114: {fileID: 661556722}
   - 114: {fileID: 661556721}
   - 114: {fileID: 661556708}
   - 114: {fileID: 661556715}
@@ -511,29 +510,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parentTransform: {fileID: 0}
+  doPosition: 1
+  doRotation: 1
   attemptChildScale: 0
---- !u!114 &661556722
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 661556707}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f15c30e862a1f5d44904d8f237512cbc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  headTransform: {fileID: 0}
-  bodyTransform: {fileID: 0}
-  characterDriver: {fileID: 0}
-  EnableInput: 1
-  axes: 0
-  sensitivityX: 8
-  sensitivityY: 8
-  rotationMinimumX: -40
-  rotationMaximumX: 40
-  rotationMinimumY: -89
-  rotationMaximumY: 85
 --- !u!114 &661556723
 MonoBehaviour:
   m_ObjectHideFlags: 0

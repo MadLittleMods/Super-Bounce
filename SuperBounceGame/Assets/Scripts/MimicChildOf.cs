@@ -5,6 +5,9 @@ public class MimicChildOf : MonoBehaviour {
 
 	public Transform parentTransform;
 
+	public bool doPosition = true;
+	public bool doRotation = true;
+
 	// If true, will attempt to scale the child accurately as the parent scales
 	// Will not be accurate if starting rotations are different or irregular
 	// Experimental
@@ -28,7 +31,9 @@ public class MimicChildOf : MonoBehaviour {
 	bool hasInitialized = false;
 
 	void Start () {
-		this.Init();
+		// If has not already initialized
+		if(!this.hasInitialized)
+			this.Init();
 	}
 
 	public void Init()
@@ -54,25 +59,36 @@ public class MimicChildOf : MonoBehaviour {
 		}
 	}
 	
-	void LateUpdate () {
+	void LateUpdate () 
+	{
+		this.UpdatePosition();
+	}
 
+	// Manual method to update the position
+	public void UpdatePosition()
+	{
 		if(this.hasInitialized)
 		{
-
+			
 			parentMatrix = Matrix4x4.TRS(parentTransform.position, parentTransform.rotation, parentTransform.lossyScale);
+			
+			if(this.doPosition)
+			{
+				//startChildPosition += (transform.position - prevPosition); // Make sure that if you translate the object, we don't just jump back
+				transform.position = parentMatrix.MultiplyPoint3x4(startChildPosition);
+			}
 
-
-			//startChildPosition += (transform.position - prevPosition); // Make sure that if you translate the object, we don't just jump back
-			transform.position = parentMatrix.MultiplyPoint3x4(startChildPosition);
-
-			//startChildRotationQ *= Quaternion.Inverse(prevRotationQ)*transform.rotation; // Make sure that if you rotate the object, we don't just jump back
-			transform.rotation = (parentTransform.rotation * Quaternion.Inverse(startParentRotationQ)) * startChildRotationQ;
+			if(this.doRotation)
+			{
+				//startChildRotationQ *= Quaternion.Inverse(prevRotationQ)*transform.rotation; // Make sure that if you rotate the object, we don't just jump back
+				transform.rotation = (parentTransform.rotation * Quaternion.Inverse(startParentRotationQ)) * startChildRotationQ;
+			}
 
 			// Incorrect scale code; it scales the child locally not gloabally; Might work in some cases, but will be inaccurate in others
 			if (attemptChildScale) {
 				transform.localScale = Vector3.Scale(startChildScale, DivideVectors(parentTransform.lossyScale, startParentScale));
 			}
-
+			
 			// Scale code 2; I was working on to scale the child globally through it's local scale, but turned out to be impossible using localScale
 			/*
 			Vector3 modVec;
@@ -91,24 +107,15 @@ public class MimicChildOf : MonoBehaviour {
 
 			transform.localScale = Vector3.Scale(startChildScale, Vector3.Scale(DivideVectors(parentTransform.lossyScale, startParentScale), modVec));
 			*/
-
+			
 			prevPosition = transform.position;
 			prevRotationQ = transform.rotation;
-
+			
 		}
-
-
 	}
 
-	public void SetRotationThis(Quaternion rot)
-	{
-		startChildRotationQ = rot;
-	}
 
-	public void RotateThis(Quaternion rot)
-	{
-		startChildRotationQ *= rot;
-	}
+
 
 
 	Vector3 DivideVectors(Vector3 num, Vector3 den) 

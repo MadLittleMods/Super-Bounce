@@ -2,13 +2,13 @@
 
 public class CharacterState
 {
-	public Vector3 position = Vector3.zero;
+	public Vector3 Position = Vector3.zero;
 	
-	public Vector3 velocity = Vector3.zero;
+	public Vector3 Velocity = Vector3.zero;
 
 	// Like input added every frame
 	// This is just a nice variable to see if the character moved
-	public Vector3 instantVelocity = Vector3.zero;
+	public Vector3 InstantVelocity = Vector3.zero;
 	
 	public CharacterState()
 	{
@@ -17,21 +17,21 @@ public class CharacterState
 	
 	public CharacterState(CharacterState s)
 	{
-		this.position = s.position;
-		this.velocity = s.velocity;
-		this.instantVelocity = s.instantVelocity;
+		this.Position = s.Position;
+		this.Velocity = s.Velocity;
+		this.InstantVelocity = s.InstantVelocity;
 	}
 	
 	public CharacterState(Vector3 position, Vector3 velocity)
 	{
-		this.position = position;
+		this.Position = position;
 		
-		this.velocity = velocity;
+		this.Velocity = velocity;
 	}
 	
 	public static CharacterState Lerp(CharacterState from, CharacterState to, float t)
 	{
-		return new CharacterState(Vector3.Lerp(from.position, to.position, t), Vector3.Lerp(from.velocity, to.velocity, t));
+		return new CharacterState(Vector3.Lerp(from.Position, to.Position, t), Vector3.Lerp(from.Velocity, to.Velocity, t));
 	}
 	
 	public static implicit operator string(CharacterState s)
@@ -42,6 +42,6 @@ public class CharacterState
 	
 	public override string ToString()
 	{
-		return "p: " + this.position + " v: " + this.velocity;
+		return "p: " + this.Position + " v: " + this.Velocity;
 	}
 }
