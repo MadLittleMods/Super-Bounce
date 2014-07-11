@@ -2,7 +2,7 @@
 
 Super Bouncing Game just like Halo 2.
 
-My Entry in the [2014 GDSE Summer Game Jam](http://meta.gamedev.stackexchange.com/q/1637/16587).
+This was my entry in the [2014 GDSE Summer Game Jam](http://meta.gamedev.stackexchange.com/q/1637/16587).
 
 
 ### [Visit the Website](http://superbouncegame.com/)
@@ -11,7 +11,12 @@ My Entry in the [2014 GDSE Summer Game Jam](http://meta.gamedev.stackexchange.co
 
 ## Changelog
 
-### Latest Version: 0.4
+### Latest Version: 0.41
+
+`0.41`:
+ - Fixed regression issue #2 about mouse sensitivity
+ - Added input smoothing option to enable fine tuning of movement
+ - Persistent mouse sensitivity and input smoothing in options
 
 `0.4`:
  - Fixed collisions with updated character controller (still some issues on corners)
@@ -23,7 +28,7 @@ My Entry in the [2014 GDSE Summer Game Jam](http://meta.gamedev.stackexchange.co
  - Fixed info box messages
 
 `0.2`:
- - What was accomplished before the [2014 GDSE Game Jam deadline](http://meta.gamedev.stackexchange.com/a/1660/16587)
+ - Everything that was accomplished before the [2014 GDSE Game Jam deadline](http://meta.gamedev.stackexchange.com/a/1660/16587)
 
-`.1`:
+`0.1`:
  - Initial commit with working game
