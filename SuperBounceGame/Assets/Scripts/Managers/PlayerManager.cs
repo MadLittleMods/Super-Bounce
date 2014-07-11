@@ -27,43 +27,21 @@ public class PlayerManager : MonoBehaviour {
 	}
 	
 	public delegate void PlayerJoinedEventHandler(MonoBehaviour sender, PlayerActivityEventArgs e);
-	public event PlayerJoinedEventHandler OnPlayerJoined;
+	public event PlayerJoinedEventHandler OnPlayerJoined = delegate { };
 
 	public delegate void PlayerLeftEventHandler(MonoBehaviour sender, PlayerActivityEventArgs e);
-	public event PlayerLeftEventHandler OnPlayerLeft;
+	public event PlayerLeftEventHandler OnPlayerLeft = delegate { };
 
 	public delegate void PlayerUpdatedEventHandler(MonoBehaviour sender, PlayerActivityEventArgs e);
-	public event PlayerUpdatedEventHandler OnPlayerUpdated;
+	public event PlayerUpdatedEventHandler OnPlayerUpdated = delegate { };
 
-	// Use this to trigger the event
-	protected virtual void ThisPlayerJoined(MonoBehaviour sender, PlayerActivityEventArgs e)
-	{
-		PlayerJoinedEventHandler handler = OnPlayerJoined;
-		if(handler != null)
-		{
-			handler(sender, e);
-		}
-	}
 
-	// Use this to trigger the event
-	protected virtual void ThisPlayerLeft(MonoBehaviour sender, PlayerActivityEventArgs e)
-	{
-		PlayerLeftEventHandler handler = OnPlayerLeft;
-		if(handler != null)
-		{
-			handler(sender, e);
-		}
-	}
+	public delegate void MouseSensitivityUpdatedEventHandler(MonoBehaviour sender, float sensitivity);
+	public event MouseSensitivityUpdatedEventHandler OnMouseSensitivityUpdated = delegate { };
 
-	// Use this to trigger the event
-	protected virtual void ThisPlayerUpdated(MonoBehaviour sender, PlayerActivityEventArgs e)
-	{
-		PlayerUpdatedEventHandler handler = OnPlayerUpdated;
-		if(handler != null)
-		{
-			handler(sender, e);
-		}
-	}
+	public delegate void MovementInputSmoothingUpdatedEventHandler(MonoBehaviour sender, float inputSmoothing);
+	public event MovementInputSmoothingUpdatedEventHandler OnMovementInputSmoothingUpdated = delegate { };
+
 
 
 	public GameObject playerPrefab;
@@ -109,11 +87,11 @@ public class PlayerManager : MonoBehaviour {
 		// Bind the player updated event to the player manager player update event
 		// Yes we know a bit of a duplication but separation of power...
 		player.OnPlayerUpdated += (updatedPlayer) => { 
-			this.ThisPlayerUpdated(this, new PlayerActivityEventArgs(updatedPlayer.GetPlayerData())); 
+			this.OnPlayerUpdated(this, new PlayerActivityEventArgs(updatedPlayer.GetPlayerData())); 
 		};
 
 		// Fire the join player event
-		this.ThisPlayerJoined(this, new PlayerActivityEventArgs(player.GetPlayerData()));
+		this.OnPlayerJoined(this, new PlayerActivityEventArgs(player.GetPlayerData()));
 	}
 	public void AddPlayerSilent(string guid, Player player)
 	{
@@ -135,7 +113,7 @@ public class PlayerManager : MonoBehaviour {
 			Destroy(player.gameObject);
 			this.playerList.Remove(guid);
 
-			this.ThisPlayerLeft(this, new PlayerActivityEventArgs(player.GetPlayerData()));
+			this.OnPlayerLeft(this, new PlayerActivityEventArgs(player.GetPlayerData()));
 		}
 		else
 			Debug.LogWarning("Trying to remove player that is not in the list");
@@ -243,6 +221,47 @@ public class PlayerManager : MonoBehaviour {
 	{
 		Debug.Log(this.PlayerList.ToDebugString());
 	}
+
+
+
+
+	public void SetMouseSensitivity(float sensitivity) 
+	{
+		// Sanitize the data
+		sensitivity = Mathf.Clamp(sensitivity, 0f, 100f);
+
+		// Save it persistently
+		PlayerPrefs.SetFloat("Player_MouseSensitivity", sensitivity);
+
+		// Fire the event
+		this.OnMouseSensitivityUpdated(this, sensitivity);
+	}
+	public float GetMouseSensitivity() 
+	{
+		return PlayerPrefs.GetFloat("Player_MouseSensitivity", 15f);
+	}
+
+
+	public void SetMovementInputSmoothing(float inputSmoothing) 
+	{
+		// Sanitize the data
+		inputSmoothing = Mathf.Clamp(inputSmoothing, 0f, 3f);
+		
+		// Save it persistently
+		PlayerPrefs.SetFloat("Player_MovementInputSmoothing", inputSmoothing);
+		
+		// Fire the event
+		this.OnMovementInputSmoothingUpdated(this, inputSmoothing);
+	}
+	public float GetMovementInputSmoothing() 
+	{
+		return PlayerPrefs.GetFloat("Player_MovementInputSmoothing", .1f);
+	}
+
+
+
+
+
 
 
 

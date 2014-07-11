@@ -479,6 +479,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioManager: {fileID: 577848419}
+  playerManager: {fileID: 577848413}
 --- !u!114 &661556720
 MonoBehaviour:
   m_ObjectHideFlags: 0

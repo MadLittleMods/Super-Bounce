@@ -43,6 +43,7 @@ define([
 
 	window.switchTabs = function(newTab)
 	{
+		// Set the other one as inactive
 		$('.main-nav .main-nav-item').removeClass('active');
 		$('.main-ui-layout-body').removeClass('active');
 
@@ -91,7 +92,7 @@ define([
 				engine.on('toggleUI', toggleUI, module.id);
 
 
-				// Get classes from fonts
+				// Generate classes from fonts
 				// using webfontloader: https://github.com/typekit/webfontloader
 				WebFont.load({
 					custom: {

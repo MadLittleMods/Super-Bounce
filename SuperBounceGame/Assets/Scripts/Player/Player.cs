@@ -178,6 +178,28 @@ public class Player : MonoBehaviour
 			this.playerManager = managerObject.GetComponent<PlayerManager>();
 			this.gameManager = managerObject.GetComponent<GameManager>();
 
+			if(this.playerManager != null)
+			{
+				//Debug.Log("Hooking sensitivity and input smoothing on player");
+				// Change the sensitivity when the setting is changed
+				this.playerManager.OnMouseSensitivityUpdated += (sender, sensitivity) => {
+					if(this.headMoveComponent != null)
+					{
+						this.headMoveComponent.sensitivityX = sensitivity;
+						this.headMoveComponent.sensitivityY = sensitivity;
+					}
+				};
+
+				// Change the input smoothing when the setting is changed
+				this.playerManager.OnMovementInputSmoothingUpdated += (sender, inputSmoothing) => {
+					if(this.characterDriver != null)
+					{
+						//Debug.Log("Updating input smoothing on player component");
+						this.characterDriver.inputSmoothing = inputSmoothing;
+					}
+				};
+			}
+
 			if(this.gameManager != null)
 			{
 				// When the game ends reset the mecanim
