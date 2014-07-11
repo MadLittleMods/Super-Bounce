@@ -14,7 +14,7 @@ This was my entry in the [2014 GDSE Summer Game Jam](http://meta.gamedev.stackex
 ### Latest Version: 0.41
 
 `0.41`:
- - Fixed regression issue #2 about mouse sensitivity
+ - Fixed [regression issue #2](https://github.com/MadLittleMods/Super-Bounce/issues/2) about mouse sensitivity
  - Added input smoothing option to enable fine tuning of movement
  - Persistent mouse sensitivity and input smoothing in options
 
