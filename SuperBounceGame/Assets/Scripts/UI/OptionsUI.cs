@@ -32,7 +32,24 @@ public class OptionsUI : MonoBehaviour {
 		networkView.group = 1;
 
 		this.m_View = GetComponent<CoherentUIView>();
-		this.m_View.OnViewCreated += (view) => {this.viewReady = true;};
+		this.m_View.OnViewCreated += (view) => {
+			this.viewReady = true;
+		
+			// Whenever something changes update the options
+			if(this.audioManager != null)
+			{
+				this.audioManager.OnVolumeChange += (sender, e) => {
+					this.m_View.View.TriggerEvent("updateOptions");
+				};
+			}
+			
+			if(this.playerManager != null)
+			{
+				this.playerManager.OnPlayerUpdated += (sender, e) => {
+					this.m_View.View.TriggerEvent("updateOptions");
+				};
+			}
+		};
 		this.m_View.OnViewDestroyed += () => {this.viewReady = false;};
 		
 		// Make the Coherent View receive input
@@ -41,20 +58,7 @@ public class OptionsUI : MonoBehaviour {
 
 
 
-		// Whenever something changes update the options
-		if(this.audioManager != null)
-		{
-			this.audioManager.OnVolumeChange += (sender, e) => {
-				this.m_View.View.TriggerEvent("updateOptions");
-			};
-		}
 
-		if(this.playerManager != null)
-		{
-			this.playerManager.OnPlayerUpdated += (sender, e) => {
-				this.m_View.View.TriggerEvent("updateOptions");
-			};
-		}
 	}
 	
 	// Update is called once per frame

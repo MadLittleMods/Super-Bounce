@@ -1,8 +1,26 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 public class CharacterCrouchDriver : MonoBehaviour 
 {
+
+	public class CrouchStateChangeEventArgs : EventArgs
+	{
+		public bool IsCrouching = false;
+		
+		public CrouchStateChangeEventArgs() {
+		}
+		
+		public CrouchStateChangeEventArgs(bool isCrouching)
+		{
+			this.IsCrouching = isCrouching;
+		}
+	}
+	public delegate void CrouchStateChangeEventHandler(CrouchStateChangeEventArgs e);
+	// Having the `delegate { }` makes us able not have to check for null when firing the event
+	public event CrouchStateChangeEventHandler OnCrouchStateChange = delegate { };
+
 
 	public bool EnableMovement = true;
 	
@@ -16,17 +34,28 @@ public class CharacterCrouchDriver : MonoBehaviour
 	public BoxCollider playerBoxCollider;
 	public NetworkedAnimator networkedAnimator;
 
+	private bool _isCrouching = false;
 	public bool IsCrouching
 	{
-		get;
-		set;
+		get {
+			return this._isCrouching;
+		}
+		set {
+			// Fire the event if it is something different
+			if(this._isCrouching != value)
+			{
+				this.OnCrouchStateChange(new CrouchStateChangeEventArgs(value));
+			}
+
+			this._isCrouching = value;
+		}
 	}
 
 
 
 	private Vector3 initPlayerBoxColliderSize;
 	private Vector3 initPlayerBoxColliderCenter;
-	public float initSizeCenterRatioY = 2f;
+	float initSizeCenterRatioY = 2f;
 
 
 	// Use this for initialization
@@ -44,10 +73,10 @@ public class CharacterCrouchDriver : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		if(this.EnableMovement)
+		if(enabled && this.EnableMovement)
 		{
 			// Crouching
-			this.IsCrouching = Input.GetAxisRaw("Crouch") > .7f;
+			this.IsCrouching = Input.GetAxisRaw("Crouch") > .5f;
 			if(this.networkedAnimator)
 			{
 				this.networkedAnimator.SetBool("IsCrouching", this.IsCrouching);

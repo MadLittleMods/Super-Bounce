@@ -1,15 +1,6 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Player\Player.cs">
-    <Files>
-      <File FileName="Assets\Scripts\Player\RigidbodyCharacterDriver.cs" Line="48" Column="29" />
-      <File FileName="Assets\Scripts\Player\Player.cs" Line="197" Column="9" />
-      <File FileName="Assets\Scripts\UI\OptionsUI.cs" Line="138" Column="6" />
-      <File FileName="Assets\Scripts\Managers\PlayerManager.cs" Line="254" Column="60" />
-      <File FileName="Assets\Scripts\Managers\AudioManager.cs" Line="30" Column="35" />
-      <File FileName="Assets\Scripts\UI\ServerLobbyUI.cs" Line="43" Column="65" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

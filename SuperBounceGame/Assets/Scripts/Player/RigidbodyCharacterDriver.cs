@@ -24,21 +24,8 @@ public class RigidbodyCharacterDriver : MonoBehaviour
 	// Having the `delegate { }` makes us able not have to check for null when firing the event
 	public event VelocityChangeEventHandler OnVelocityChange = delegate { };
 
-	public class GroundCollisionEventArgs : EventArgs
-	{
-		public CharacterState CharacterState;
-		public RaycastHit Hit;
-		
-		public GroundCollisionEventArgs() {
-		}
-		
-		public GroundCollisionEventArgs(Vector3 position, Vector3 velocity, RaycastHit hit)
-		{
-			this.CharacterState = new CharacterState(position, velocity);
-			this.Hit = hit;
-		}
-	}
-	public delegate void GroundCollisionChangeEventHandler(GroundCollisionEventArgs e);
+
+	public delegate void GroundCollisionChangeEventHandler(CharacterState characterState, RaycastHit hit);
 	// Having the `delegate { }` makes us able not have to check for null when firing the event
 	public event GroundCollisionChangeEventHandler OnGroundCollision = delegate { };
 	
@@ -164,7 +151,13 @@ public class RigidbodyCharacterDriver : MonoBehaviour
 		// Checks to see whether you are going in the opposite direction of gravity; If you are: return false
 		// To test this, stand against a block/wall that you can jump on, then jump
 		// You shouldn't get a true when you reach the block/wall top
-		if(Mathf.Approximately(Vector3.Angle(rigidbody.velocity.normalized, Physics.gravity.normalized), 180f))
+		Vector3 velocityProjectedOntoGravity = Vector3.Project(currentVelocity, Physics.gravity.normalized);
+		float angleBetweenProjectedAndGravity = Vector3.Angle(velocityProjectedOntoGravity, Physics.gravity.normalized);
+		//Debug.Log((Mathf.Approximately(angleBetweenProjectedAndGravity, 180f) && velocityProjectedOntoGravity.sqrMagnitude > .08f) + ": " + angleBetweenProjectedAndGravity + " - " + velocityProjectedOntoGravity+":"+velocityProjectedOntoGravity.sqrMagnitude);
+		//if(Mathf.Approximately(Vector3.Angle(currentVelocity.normalized, Physics.gravity.normalized), 180f))
+		
+		// If the velocity is in the opposite direction of gravity and it is above the noise, then we are not grounded
+		if(Mathf.Approximately(angleBetweenProjectedAndGravity, 180f) && velocityProjectedOntoGravity.sqrMagnitude > .08f)
 		{
 			//Debug.Log("not grounded2");
 			return new RaycastHit[0];
@@ -186,7 +179,7 @@ public class RigidbodyCharacterDriver : MonoBehaviour
 
 	// Use this for initialization
 	void Start () {
-		// Attach the event
+		// Attach the footstep event
 		if(this.playerAnimatorEventCatcher != null)
 			this.playerAnimatorEventCatcher.OnPlayFootStepSound += this.PlayFootStepSound;
 
@@ -204,7 +197,7 @@ public class RigidbodyCharacterDriver : MonoBehaviour
 
 	void Update()
 	{
-		if(this.EnableMovement)
+		if(enabled && this.EnableMovement)
 		{
 			// Jumping
 			if(this.isGrounded && Input.GetButtonDown("Jump")) 
@@ -365,7 +358,7 @@ public class RigidbodyCharacterDriver : MonoBehaviour
 
 		// Fire the event
 		if(isGroundHit)
-			this.OnGroundCollision(new GroundCollisionEventArgs(transform.position, this.lastRigidBodyVelocity, groundHit));
+			this.OnGroundCollision(new CharacterState(transform.position, this.lastRigidBodyVelocity), groundHit);
 
 		//Debug.Log("collision: " + collision.gameObject);
 	}

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEditor;
 
@@ -18,7 +18,7 @@ public class SuperBounceControllerLabel : Editor {
 		this.scriptOfOurType = (SuperBounceController)target;  
 		this.targetGameObject = (GameObject)this.scriptOfOurType.gameObject;
 
-		this.characterDriver = this.scriptOfOurType.characterDriver;
+		this.characterDriver = this.scriptOfOurType.rigidbodyCharacterDriver;
 	}
 	
 	void OnSceneGUI ()

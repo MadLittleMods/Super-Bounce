@@ -2,9 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class SuperBounceController : MonoBehaviour {
+public class SuperBounceController : MonoBehaviour 
+{
+	public enum WhichCharacterDriver {
+		RigidbodyCharacterDriver, CharacterDriver
+	}
 
-	public RigidbodyCharacterDriver characterDriver;
+	public WhichCharacterDriver whichCharacterDriver;
+
+	public RigidbodyCharacterDriver rigidbodyCharacterDriver;
+	public CharacterDriver characterDriver;
 
 	// Determines if we can bounce if we hit a mesh edge
 	// Look into Halo 2 super bouncing if you are unsure what this exactly means
@@ -44,10 +51,17 @@ public class SuperBounceController : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
+		if(this.rigidbodyCharacterDriver != null)
+		{
+			this.rigidbodyCharacterDriver.OnGroundCollision += this.HandleCollision;
+
+		}
+		else
+			Debug.LogWarning("Missing RigidBodyCharacterDriver in SuperBounceController", this);
+
 		if(this.characterDriver != null)
 		{
 			this.characterDriver.OnGroundCollision += this.HandleCollision;
-
 		}
 		else
 			Debug.LogWarning("Missing RigidBodyCharacterDriver in SuperBounceController", this);
@@ -62,25 +76,27 @@ public class SuperBounceController : MonoBehaviour {
 
 	}
 
-	public void HandleCollision(RigidbodyCharacterDriver.GroundCollisionEventArgs e)
+	public void HandleCollision(CharacterState characterState, RaycastHit hit)
 	{
 		this.debugBounceClosestPointOnEdge = Vector3.zero;
+
+		//Debug.Log("Collision");
 
 		/* */
 		if(this.HasCrouch)
 		{
 
-			if(e.Hit.collider != null && e.Hit.collider.gameObject != null)
+			if(hit.collider != null && hit.collider.gameObject != null)
 			{
 
-				float playerMomentum = Mathf.Abs(e.CharacterState.Velocity.y);
-				float momentumMinimum = this.characterDriver != null ? this.characterDriver.CalculateJumpVerticalSpeed(this.characterDriver.JumpHeight) : 5f;
-				//Debug.Log(playerMomentum + " " + this.characterDriver.CalculateJumpVerticalSpeed(this.characterDriver.JumpHeight));
+				float playerMomentum = Mathf.Abs(characterState.Velocity.y);
+				float momentumMinimum = this.whichCharacterDriver == WhichCharacterDriver.RigidbodyCharacterDriver ? (this.rigidbodyCharacterDriver != null ? this.rigidbodyCharacterDriver.CalculateJumpVerticalSpeed(this.rigidbodyCharacterDriver.JumpHeight) : 5f) : (this.characterDriver != null ? this.characterDriver.CalculateJumpVerticalSpeed(this.characterDriver.JumpHeight) : 5f);
+				//Debug.Log(playerMomentum + " " + momentumMinimum);
 				
 				// Make sure we are going faster than a normal jump
 				if(playerMomentum > momentumMinimum)
 				{
-					this.HandleSuperBounce(e.Hit.collider.gameObject, e.CharacterState);
+					this.HandleSuperBounce(hit.collider.gameObject, characterState);
 				}
 
 			}
@@ -93,8 +109,9 @@ public class SuperBounceController : MonoBehaviour {
 
 	void HandleSuperBounce(GameObject go, CharacterState current)
 	{
-		CharacterState currentState = new CharacterState(current);
+		//CharacterState currentState = new CharacterState(current);
 
+		//Debug.Log("Handling Bounce");
 		
 		//Debug.Log(currentState.position.ToDebugString());
 		
@@ -102,11 +119,11 @@ public class SuperBounceController : MonoBehaviour {
 		int numBouncesSoFar = 0;
 
 
-		float playerMomentum = Mathf.Abs(currentState.Velocity.y);
+		float playerMomentum = Mathf.Abs(current.Velocity.y);
 		
 		// Find the nearest vertices
 		// Even this might contain multiple points, they are all in the same position
-		Dictionary<MeshFilter, List<IndexPointPair>> verticeDictionary = EdgeDetection.NearestVerticesTo(go, currentState.Position, .2f);
+		Dictionary<MeshFilter, List<IndexPointPair>> verticeDictionary = EdgeDetection.NearestVerticesTo(go, current.Position, .2f);
 		// Loop through all the nearest vertices
 		foreach(KeyValuePair<MeshFilter, List<IndexPointPair>> meshPointPair in verticeDictionary)
 		{
@@ -121,12 +138,12 @@ public class SuperBounceController : MonoBehaviour {
 					// Loop through each segment of the edge. Should be only 1 edge from 0index to 1index
 					for(int edgeIndex = 0; edgeIndex < edge.Length-1; edgeIndex++)
 					{
-						Vector3 closestPointOnEdge = EdgeDetection.ClosestPointOnSegment(edge[edgeIndex], edge[edgeIndex+1], currentState.Position);
+						Vector3 closestPointOnEdge = EdgeDetection.ClosestPointOnSegment(edge[edgeIndex], edge[edgeIndex+1], current.Position);
 						this.debugBounceClosestPointOnEdge = closestPointOnEdge;
 						
 						//float distanceAway = Vector3.Distance(closestPointOnEdge, currentState.position);
-						float horizontalDistanceAway = Vector3.Distance(Vector3.Scale(closestPointOnEdge, new Vector3(1f, 0f, 1f)), Vector3.Scale(currentState.Position, new Vector3(1f, 0f, 1f)));
-						float verticalDistanceAway = Vector3.Distance(Vector3.Scale(closestPointOnEdge, new Vector3(0f, 1f, 0f)), Vector3.Scale(currentState.Position, new Vector3(0f, 1f, 0f)));
+						float horizontalDistanceAway = Vector3.Distance(Vector3.Scale(closestPointOnEdge, new Vector3(1f, 0f, 1f)), Vector3.Scale(current.Position, new Vector3(1f, 0f, 1f)));
+						float verticalDistanceAway = Vector3.Distance(Vector3.Scale(closestPointOnEdge, new Vector3(0f, 1f, 0f)), Vector3.Scale(current.Position, new Vector3(0f, 1f, 0f)));
 						//Debug.Log(Vector3.Scale(closestPointOnEdge, new Vector3(0f, 1f, 0f)).ToVerboseString() + " " + Vector3.Scale(currentState.position, new Vector3(0f, 1f, 0f)).ToVerboseString());
 						//Debug.Log("h: " + horizontalDistanceAway + " v: " + verticalDistanceAway);
 						this.debugHorizontalDistanceFromPoint = horizontalDistanceAway;
@@ -155,12 +172,28 @@ public class SuperBounceController : MonoBehaviour {
 
 							//Debug.Log(playerMomentum);
 
-							// Countact any gravity
-							float counteractNegativeYVelocity = (rigidbody.velocity.y < 0f ? Mathf.Abs(rigidbody.velocity.y) : 0f);
-							
+							// Counteract any gravity
+							// Only add it once
+							float counteractNegativeYVelocity = Mathf.Abs(current.Velocity.y);
+
+
+							//counteractNegativeYVelocity = (rigidbody.velocity.y < 0f ? Mathf.Abs(rigidbody.velocity.y) : 0f);
+
+
+
 							// Add half as much as before for every edge we "hit"
 							// This is so that we don't go super high just for hitting a junction
-							rigidbody.velocity += (-1f*Physics.gravity.normalized) * ((playerMomentum * Mathf.Pow(.5f, numBouncesSoFar)) + counteractNegativeYVelocity);
+							Vector3 bounceVelocity = (-1f*Physics.gravity.normalized) * ((playerMomentum * Mathf.Pow(.5f, numBouncesSoFar)) + (numBouncesSoFar == 0 ? counteractNegativeYVelocity : 0f));
+
+							if(this.whichCharacterDriver == WhichCharacterDriver.RigidbodyCharacterDriver)
+							{
+								rigidbody.velocity += bounceVelocity;
+							}
+							else if(this.whichCharacterDriver == WhichCharacterDriver.CharacterDriver)
+							{
+								//Debug.Log("current: " + current.Velocity + " bounce: " + bounceVelocity);
+								this.characterDriver.AddVelocity(bounceVelocity);
+							}
 							
 							numBouncesSoFar++;
 							

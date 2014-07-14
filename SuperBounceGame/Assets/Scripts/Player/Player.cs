@@ -117,7 +117,8 @@ public class Player : MonoBehaviour
 
 	public Transform CameraSpawn;
 	
-	public RigidbodyCharacterDriver characterDriver;
+	public RigidbodyCharacterDriver rigidbodyCharacterDriver;
+	public CharacterDriver characterDriver;
 	public CharacterCrouchDriver characterCrouchDriver;
 	public HeadMove headMoveComponent;
 	public MimicChildOf headCameraMimicChildOfComponent;
@@ -192,9 +193,13 @@ public class Player : MonoBehaviour
 
 				// Change the input smoothing when the setting is changed
 				this.playerManager.OnMovementInputSmoothingUpdated += (sender, inputSmoothing) => {
-					if(this.characterDriver != null)
+					if(this.rigidbodyCharacterDriver != null)
 					{
 						//Debug.Log("Updating input smoothing on player component");
+						this.rigidbodyCharacterDriver.inputSmoothing = inputSmoothing;
+					}
+					if(this.characterDriver != null)
+					{
 						this.characterDriver.inputSmoothing = inputSmoothing;
 					}
 				};
@@ -231,16 +236,39 @@ public class Player : MonoBehaviour
 				}
 			};
 			
-			if(this.characterDriver != null)
+			if(this.rigidbodyCharacterDriver != null)
 			{
 				// Attach the character driver
-				this.characterDriver.OnVelocityChange += (e) => {
+				this.rigidbodyCharacterDriver.OnVelocityChange += (e) => {
 					//Debug.Log(e.Velocity.ToVerboseString(3, true));
 					this.headMoveComponent.characterMovementVelocity = e.Velocity;
 				};
 			}
+			if(this.characterDriver != null)
+			{
+				this.characterDriver.OnVelocityChange += (e) => {
+					this.headMoveComponent.characterMovementVelocity = e.Velocity;
+				};
+			}
 		}
-		
+
+		// Hook the crouching driver into our character movement driver
+		if(this.characterCrouchDriver != null)
+		{
+			if(this.rigidbodyCharacterDriver != null)
+			{
+				this.characterCrouchDriver.OnCrouchStateChange += (e) => {
+					this.rigidbodyCharacterDriver.IsCrouching = e.IsCrouching;
+				};
+			}
+
+			if(this.characterDriver != null)
+			{
+				this.characterCrouchDriver.OnCrouchStateChange += (e) => {
+					this.characterDriver.IsCrouching = e.IsCrouching;
+				};
+			}
+		}
 		
 		
 		if(networkView == null && this.forceNetworkViewToBeMineToMove)
@@ -271,16 +299,27 @@ public class Player : MonoBehaviour
 		enableMovement &= !this.forceNetworkViewToBeMineToMove || (networkView != null && networkView.isMine);
 		// If the game has started
 		enableMovement &= !this.forceGameManagerStatusToMove || (this.gameManager != null && this.gameManager.GameStatus == GameManager.GameState.started);
-		
-		// Set whether we can move
-		if(this.characterDriver != null)
+
+		if(this.headMoveComponent != null)
 		{
-			this.characterDriver.EnableMovement = enableMovement;
+			this.headMoveComponent.EnableInput = enableMovement;
+		}
+
+		// Set whether we can move
+		if(this.rigidbodyCharacterDriver != null)
+		{
+			this.rigidbodyCharacterDriver.EnableMovement = enableMovement;
 		}
 		if(this.characterCrouchDriver != null)
 		{
 			this.characterCrouchDriver.EnableMovement = enableMovement;
 		}
+		
+		if(this.characterDriver != null)
+		{
+			this.characterDriver.EnableMovement = enableMovement;
+		}
+
 	}
 
 	// Used for when you get spawned into the game and need to attach the camera to ourselves, etc
@@ -303,6 +342,7 @@ public class Player : MonoBehaviour
 			Camera.main.transform.rotation = this.CameraSpawn.rotation;
 		}
 
+		/* * /
 		// Reset the head move 
 		if(this.headMoveComponent != null)
 		{
@@ -313,6 +353,7 @@ public class Player : MonoBehaviour
 		}
 		else
 			Debug.LogWarning("Missing `HeadMove` script on camera for bounce player");
+		/* */
 
 		// Setup the camera parent relationship
 		var cameraMimicChildComponent = Camera.main.GetComponent<MimicChildOf>();
@@ -333,9 +374,13 @@ public class Player : MonoBehaviour
 
 
 
-		if(this.characterDriver != null)
+		if(this.rigidbodyCharacterDriver != null)
 		{
 			// We need this for input direction
+			this.rigidbodyCharacterDriver.CameraTransform = Camera.main.transform;
+		}
+		if(this.characterDriver != null)
+		{
 			this.characterDriver.CameraTransform = Camera.main.transform;
 		}
 
@@ -355,13 +400,42 @@ public class Player : MonoBehaviour
 	}
 	public void TeleportPlayer(Vector3 position, Quaternion rotation, bool maintainVelocity = false)
 	{
+		
+
+
 		transform.position = position;
 		transform.rotation = rotation;
 
+		/* * /
+		// Set to false when we start
+		// We set it back to true at the end
+		if(this.networkedAnimator != null)
+		{
+			this.networkedAnimator.SetBool("IsInit", false);
+			if(this.headMoveComponent != null)
+			{
+				transform.rotation = Quaternion.identity;
+				
+				this.headMoveComponent.EnableInput = false;
+				this.headMoveComponent.Reset();
+				
+				this.headMoveComponent.Init();
+			}
+		}
+		/* */
+
+
+		if(this.rigidbodyCharacterDriver != null)
+		{
+			if(!maintainVelocity && !this.rigidbodyCharacterDriver.rigidbody.isKinematic)
+				this.rigidbodyCharacterDriver.rigidbody.velocity = Vector3.zero;
+		}
 		if(this.characterDriver != null)
 		{
+			this.characterDriver.currentState.Position = position;
+
 			if(!maintainVelocity)
-				this.characterDriver.rigidbody.velocity = Vector3.zero;
+				this.characterDriver.currentState.Velocity = Vector3.zero;
 		}
 
 		// Fire the event

@@ -36,6 +36,8 @@ SuperBounceGame/Assets/Plugins/NobleLogger.cs.meta
 SuperBounceGame/Assets/Plugins/GUI Elements/
 SuperBounceGame/Assets/Editor/NobleConsoleWindow.cs
 SuperBounceGame/Assets/Editor/NobleConsoleWindow.cs.meta
+SuperBounceGame/Assets/Editor Default Resources/Icons/Noble Cons...png
+SuperBounceGame/Assets/Editor Default Resources/Icons/Noble Cons...png.meta
 # Ignore the json library that we use in the logger
 SuperBounceGame/Assets/Plugins/Newtonsoft.Json.dll
 SuperBounceGame/Assets/Plugins/Newtonsoft.Json.dll.meta

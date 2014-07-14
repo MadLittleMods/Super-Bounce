@@ -2160,7 +2160,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &100288
 GameObject:
   m_ObjectHideFlags: 1
@@ -4582,6 +4582,9 @@ GameObject:
   - 114: {fileID: 11400016}
   - 114: {fileID: 11400014}
   - 114: {fileID: 11400018}
+  - 143: {fileID: 14300000}
+  - 114: {fileID: 11400020}
+  - 114: {fileID: 11400030}
   m_Layer: 0
   m_Name: PlayerBouncer
   m_TagString: Player
@@ -7545,6 +7548,22 @@ GameObject:
   - 114: {fileID: 11400012}
   m_Layer: 0
   m_Name: Head Collider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1 &101004
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 401004}
+  - 136: {fileID: 13600002}
+  m_Layer: 0
+  m_Name: Capsule Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12830,6 +12849,7 @@ Transform:
   m_Children:
   - {fileID: 400286}
   - {fileID: 401002}
+  - {fileID: 401004}
   m_Father: {fileID: 400608}
   m_RootOrder: 0
 --- !u!4 &400812
@@ -14075,6 +14095,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 400810}
   m_RootOrder: 1
+--- !u!4 &401004
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 101004}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400810}
+  m_RootOrder: 2
 --- !u!54 &5400000
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -14086,7 +14118,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: .0500000007
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 2
@@ -14144,7 +14176,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d1b95d51f24a4b741a2ca5aa5e70f196, type: 3}
   playOnAwake: 0
   loop: 0
-  volume: .349999994
+  volume: .197999999
   pitch: 1
 --- !u!114 &11400004
 MonoBehaviour:
@@ -14195,7 +14227,8 @@ MonoBehaviour:
   forceGameManagerStatusToMove: 1
   objectsToChangeTeamColor: []
   CameraSpawn: {fileID: 400414}
-  characterDriver: {fileID: 11400018}
+  rigidbodyCharacterDriver: {fileID: 11400018}
+  characterDriver: {fileID: 11400020}
   characterCrouchDriver: {fileID: 11400016}
   headMoveComponent: {fileID: 11400014}
   headCameraMimicChildOfComponent: {fileID: 0}
@@ -14266,14 +14299,13 @@ MonoBehaviour:
   crouchAnimationSpeed: 3
   playerBoxCollider: {fileID: 6500000}
   networkedAnimator: {fileID: 11400010}
-  initSizeCenterRatioY: 2
 --- !u!114 &11400018
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100608}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d803b6eace6bc3e49aa8f3fffc8098cf, type: 3}
   m_Name: 
@@ -14294,6 +14326,36 @@ MonoBehaviour:
   footstepSoundEffect: {fileID: 11400004}
   debugJumpYStart: 0
   debugJumpYMax: 0
+--- !u!114 &11400020
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b980ebd81cdf9543aa40ffac3e15442, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnableMovement: 1
+  inputSmoothing: .100000001
+  characterGroundedController: {fileID: 11400030}
+  networkedAnimator: {fileID: 11400010}
+  playerAnimatorEventCatcher: {fileID: 11400000}
+  characterController: {fileID: 14300000}
+  maxSurgeSpeed: 5
+  maxSwaySpeed: 5
+  jumpHeight: 4
+  crouchMaxSurgeSpeed: 3
+  crouchMaxSwaySpeed: 3
+  crouchJumpHeight: 4
+  CameraTransform: {fileID: 0}
+  jumpSoundEffect: {fileID: 11400002}
+  footstepSoundEffect: {fileID: 11400004}
+  debugJumpYStart: 0
+  debugJumpYMax: 0
+  debugPrevPosition: {x: 0, y: 0, z: 0}
+  debugGroundSpeed: 0
 --- !u!114 &11400022
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -14305,7 +14367,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14120f701cf36524ca283440ef77aced, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterDriver: {fileID: 11400018}
+  whichCharacterDriver: 1
+  rigidbodyCharacterDriver: {fileID: 11400018}
+  characterDriver: {fileID: 11400020}
   bounceSoundEffect: {fileID: 11400024}
   shouldPlayDebugSoundEffects: 0
   debugVSoundEffect: {fileID: 11400026}
@@ -14371,6 +14435,18 @@ MonoBehaviour:
   loop: 0
   volume: .5
   pitch: 1
+--- !u!114 &11400030
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebef2684654980143a163fa51b276d26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SkinWidth: .0799999982
 --- !u!136 &13600000
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -14384,6 +14460,19 @@ CapsuleCollider:
   m_Height: .600000024
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!136 &13600002
+CapsuleCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 101004}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: .300000012
+  m_Height: 1.85000002
+  m_Direction: 1
+  m_Center: {x: 0, y: .925000012, z: 0}
 --- !u!137 &13700000
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
@@ -14499,6 +14588,20 @@ SkinnedMeshRenderer:
     m_Center: {x: -7.02738762e-05, y: .0151310191, z: .123962909}
     m_Extent: {x: .906917095, y: .236801863, z: 1.0496347}
   m_DirtyAABB: 0
+--- !u!143 &14300000
+CharacterController:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100608}
+  serializedVersion: 2
+  m_Height: 1.85000002
+  m_Radius: .300000012
+  m_SlopeLimit: 45
+  m_StepOffset: .300000012
+  m_SkinWidth: .0799999982
+  m_MinMoveDistance: 0
+  m_Center: {x: 0, y: .925000012, z: 0}
 --- !u!148 &14800000
 NetworkView:
   m_ObjectHideFlags: 1

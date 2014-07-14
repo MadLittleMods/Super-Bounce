@@ -129,7 +129,7 @@ MonoBehaviour:
   internetTapQueue: {fileID: 577848425}
   refreshTimeOut: 5
   uniqueGameName: rkmlqu0bsv0s4rbtraomyicgb8dd8wpgbq5yks62
-  gameVersion: .300000012
+  gameVersion: .5
   serverPort: 55789
   serverPorts: edd90000e8d90000d9d90000d7d90000d6d90000d3d90000d0d90000c8d90000c2d90000c1d90000
 --- !u!114 &577848415
@@ -147,6 +147,7 @@ MonoBehaviour:
   networkManager: {fileID: 577848414}
   scoreManager: {fileID: 577848420}
   LevelList:
+  - Tutorial01
   - Level01
   - Level02
   GameTimeLimit: -1
