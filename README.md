@@ -11,7 +11,11 @@ This was my entry in the [2014 GDSE Summer Game Jam](http://meta.gamedev.stackex
 
 ## Changelog
 
-### Latest Version: 0.41
+### Latest Version: 0.5
+
+`0.5`:
+ - Decided to change to normal character controller for the sanity of players
+   - Problems with bouncing off edge or falling into corners with old characer controller
 
 `0.41`:
  - Fixed [regression issue #2](https://github.com/MadLittleMods/Super-Bounce/issues/2) about mouse sensitivity
