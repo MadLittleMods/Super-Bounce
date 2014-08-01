@@ -38,18 +38,26 @@ public class GeneralUI : MonoBehaviour {
 
 
 		// Add some instructions to maybe help them register the trial of coherent
-		var instructionGO = new GameObject("CoherentInstructionGUIText");
-		GUIText instructionGUIText = instructionGO.AddComponent<GUIText>();
-		instructionGUIText.text = "Activate Coherent with registercoherent@superbouncegame.com";
-		instructionGO.transform.position = new Vector3(0.01f, .93f, 0f);
+		bool shouldShowRegistrationInstructionText = false;
+		GameObject instructionGO = null;
+		if(shouldShowRegistrationInstructionText)
+		{
+			instructionGO = new GameObject("CoherentInstructionGUIText");
+			GUIText instructionGUIText = instructionGO.AddComponent<GUIText>();
+			instructionGUIText.text = "Activate Coherent with registercoherent@superbouncegame.com";
+			instructionGO.transform.position = new Vector3(0.01f, .93f, 0f);
+		}
 
 		if(this.m_View != null)
 		{
 			this.m_View.OnViewCreated += (view) => {
 				this.viewReady = true;
 
-				// Once the coherent view is created, destroy the instructions
-				Destroy(instructionGO);
+				if(shouldShowRegistrationInstructionText && instructionGO != null)
+				{
+					// Once the coherent view is created, destroy the instructions
+					Destroy(instructionGO);
+				}
 			};
 			this.m_View.OnViewDestroyed += () => {
 				this.viewReady = false;
