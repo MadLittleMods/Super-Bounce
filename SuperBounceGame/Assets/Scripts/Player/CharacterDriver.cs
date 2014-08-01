@@ -183,7 +183,7 @@ public class CharacterDriver : MonoBehaviour {
 		float hSign = inputHorizontal > this.inputHorizontalSmoothed ? 1f : -1f;
 		this.inputHorizontalSmoothed = Mathf.Clamp(this.inputHorizontalSmoothed + hSign*(Time.deltaTime/this.inputSmoothing), hSign > 0 ? this.inputHorizontalSmoothed : inputHorizontal, hSign > 0 ? inputHorizontal : this.inputHorizontalSmoothed);
 
-
+		//Debug.Log("input smoothed: " + inputVerticalSmoothed + " " + inputHorizontal);
 
 		// Fixed deltaTime rendering at any speed with smoothing
 		// Technique: http://gafferongames.com/game-physics/fix-your-timestep/

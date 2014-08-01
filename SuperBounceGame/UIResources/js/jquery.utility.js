@@ -3,9 +3,9 @@
 
 
 jQuery.fn.filterFind = function(selector) { 
-	return this.find('*')         // Take the current selection and find all descendants,
-			   .addBack()         // add the original selection back to the set 
-			   .filter(selector); // and filter by the selector.
+	return this.find('*')			// Take the current selection and find all descendants,
+			   .addBack()			// add the original selection back to the set 
+			   .filter(selector);	// and filter by the selector.
 };
 
 /**
