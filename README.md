@@ -7,6 +7,9 @@ This was my entry in the [2014 GDSE Summer Game Jam](http://meta.gamedev.stackex
 
 ### [Visit the Website](http://superbouncegame.com/)
 
+![](https://i.imgur.com/3O8v821.png)
+
+![](https://i.imgur.com/f6DxdB4.gif)
 
 
 ## Changelog
